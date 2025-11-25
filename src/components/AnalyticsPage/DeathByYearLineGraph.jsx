@@ -69,7 +69,7 @@ export default function DeathByYearLineGraph() {
   return (
     <div className="bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Death Analytics</h3>
+        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Смертность по годам и по месяцам</h3>
       </div>
 
       <div className="p-3 border-b border-gray-50">

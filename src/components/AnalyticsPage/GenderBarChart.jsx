@@ -34,8 +34,8 @@ export default function GenderDonutChart() {
         {female && male && (
           <div className="absolute top-3 right-3 bg-gray-50 rounded-lg p-2 text-xs shadow-sm border border-gray-200 z-10">
             <p className="font-semibold text-gray-700">Средний возраст:</p>
-            <p className="text-gray-600">Ж: {female.avg_age}</p>
-            <p className="text-gray-600">М: {male.avg_age}</p>
+            <p className="text-gray-600">Женский: {female.avg_age}</p>
+            <p className="text-gray-600">Мужской: {male.avg_age}</p>
           </div>
         )}
 
