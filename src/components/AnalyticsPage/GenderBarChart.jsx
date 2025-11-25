@@ -55,15 +55,20 @@ export default function GenderDonutChart() {
                 dataKey="count"
                 nameKey="gender"
                 cx="50%"
-                cy="45%"
+                cy="50%"
                 innerRadius={50}
                 outerRadius={85}
                 paddingAngle={2}
+                startAngle={45}
+                endAngle={450}
+                labelLine={true}
+                label={({value }) => `${value}`}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index]} />
                 ))}
               </Pie>
+              <Tooltip />
             </PieChart>
           </ResponsiveContainer>
         </div>

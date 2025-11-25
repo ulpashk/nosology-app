@@ -31,7 +31,7 @@ export default function DeathMoBarChart() {
   return (
     <div className="bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Месячные причины</h3>
+        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Смерть в стационаре</h3>
       </div>
 
       <div className="flex-1 p-3 min-h-0">
