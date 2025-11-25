@@ -59,7 +59,7 @@ export default function GenderDonutChart() {
                 innerRadius={50}
                 outerRadius={85}
                 paddingAngle={2}
-                startAngle={45}
+                startAngle={40}
                 endAngle={450}
                 labelLine={true}
                 label={({value }) => `${value}`}

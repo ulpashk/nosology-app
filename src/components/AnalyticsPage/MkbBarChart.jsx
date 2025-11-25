@@ -34,7 +34,7 @@ export default function MKBBarChart() {
 
       <div className="flex-1 p-3 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart layout="vertical" data={mkbData} margin={{ top: 5, right: 10, left: 80, bottom: 5 }}>
+          <BarChart layout="vertical" data={mkbData} margin={{ top: 5, right: 10, left: 50, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis type="number" tick={{ fontSize: 10 }} />
             <YAxis dataKey="name" type="category" width={75} tick={{ fontSize: 9 }} />
