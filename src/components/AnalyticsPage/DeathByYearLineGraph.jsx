@@ -1,55 +1,44 @@
 "use client"
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts"
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts"
 import { useState, useEffect } from "react"
 
 export default function DeathByYearLineGraph() {
-  const [yearStats, setYearStats] = useState([])        // data from stat_by_year
-  const [avgMonthStats, setAvgMonthStats] = useState([]) // data from stat_by_months
-
-  const [mode, setMode] = useState("year") // "year" | "avg-month" | "year-month"
+  const [yearStats, setYearStats] = useState([])
+  const [avgMonthStats, setAvgMonthStats] = useState([])
+  const [mode, setMode] = useState("year")
   const [selectedYear, setSelectedYear] = useState(null)
   const [chartData, setChartData] = useState([])
 
-  // Fetch APIs
   useEffect(() => {
     async function loadAll() {
-      const yearRes = await fetch(
-        "https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_year/"
-      )
-      const yearJson = await yearRes.json()
+      try {
+        const yearRes = await fetch("https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_year/")
+        const yearJson = await yearRes.json()
 
-      const avgRes = await fetch(
-        "https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_months/"
-      )
-      const avgJson = await avgRes.json()
+        const avgRes = await fetch("https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_months/")
+        const avgJson = await avgRes.json()
 
-      setYearStats(yearJson)
-      setAvgMonthStats(avgJson)
+        setYearStats(yearJson)
+        setAvgMonthStats(avgJson)
 
-      if (yearJson.length > 0) {
-        setSelectedYear(yearJson[0].year)
+        if (yearJson.length > 0) {
+          setSelectedYear(yearJson[0].year)
+        }
+      } catch (error) {
+        console.error("Error loading data:", error)
       }
     }
     loadAll()
   }, [])
 
-  // Build chart depending on mode
   useEffect(() => {
     if (mode === "year") {
       setChartData(
         yearStats.map((y) => ({
           label: y.year.toString(),
           count: y.count,
-        }))
+        })),
       )
     }
 
@@ -60,31 +49,29 @@ export default function DeathByYearLineGraph() {
           .map((m) => ({
             label: m.month.toString().padStart(2, "0"),
             count: m.count,
-          }))
+          })),
       )
     }
 
     if (mode === "year-month" && selectedYear) {
-      const found = yearStats.find((y) => y.year === selectedYear)
+      const found = yearStats.find((y) => y.year == selectedYear)
       if (found) {
         setChartData(
           found.months.map((m, i) => ({
             label: (i + 1).toString().padStart(2, "0"),
             count: m.m_count,
-          }))
+          })),
         )
       }
     }
   }, [mode, selectedYear, yearStats, avgMonthStats])
 
   return (
-    <div className="histogram-container bg-white rounded-lg shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
-      {/* <h3 className="text-sm font-bold mb-4 uppercase">Death Analytics</h3> */}
+    <div className="bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Смертность по годам и по месяцам</h3>
+        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Death Analytics</h3>
       </div>
 
-      {/* MODE BUTTONS */}
       <div className="p-3 border-b border-gray-50">
         <div className="flex flex-wrap gap-2 mb-3">
           <button
@@ -130,7 +117,6 @@ export default function DeathByYearLineGraph() {
         )}
       </div>
 
-      {/* CHART */}
       <div className="flex-1 p-3 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
