@@ -14,7 +14,7 @@ import {
 import { useState, useEffect } from "react";
 
 // ---- WRAP HELPER ----
-function wrapText(text, maxCharsPerLine = 18) {
+function wrapText(text, maxCharsPerLine = 25) {
   const words = text.split(" ");
   const lines = [];
   let currentLine = "";
@@ -95,7 +95,7 @@ export default function DeathMoBarChart() {
           <BarChart
             data={data}
             layout="vertical"
-            margin={{ top: 5, right: 10, left: 50, bottom: 5 }}
+            margin={{ top: 5, right: 10, left: 60, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
 
