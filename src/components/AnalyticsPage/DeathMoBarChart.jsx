@@ -83,7 +83,7 @@ export default function DeathMoBarChart() {
   }, []);
 
   return (
-    <div className="bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
+    <div className="histogram-container bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Топ-10 Смертей по МО
