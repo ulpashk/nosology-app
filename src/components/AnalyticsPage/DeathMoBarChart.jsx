@@ -13,6 +13,49 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 
+// ---- WRAP HELPER ----
+function wrapText(text, maxCharsPerLine = 18) {
+  const words = text.split(" ");
+  const lines = [];
+  let currentLine = "";
+
+  words.forEach((word) => {
+    if ((currentLine + word).length <= maxCharsPerLine) {
+      currentLine += word + " ";
+    } else {
+      lines.push(currentLine.trim());
+      currentLine = word + " ";
+    }
+  });
+
+  if (currentLine) lines.push(currentLine.trim());
+
+  return lines;
+}
+
+// ---- CUSTOM Y-AXIS TICK ----
+const CustomYAxisTick = ({ x, y, payload }) => {
+  const lines = wrapText(payload.value);
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      {lines.map((line, index) => (
+        <text
+          key={index}
+          x={0}
+          y={index * 10 - (lines.length - 1) * 5}
+          dy={3}
+          fontSize={9}
+          textAnchor="end"
+          fill="#1b1b1b"
+        >
+          {line}
+        </text>
+      ))}
+    </g>
+  );
+};
+
 export default function DeathMoBarChart() {
   const [data, setData] = useState([]);
 
@@ -61,7 +104,8 @@ export default function DeathMoBarChart() {
               dataKey="name"
               type="category"
               width={75}
-              tick={{ fontSize: 9 }}
+              // tick={{ fontSize: 9 }}
+              tick={<CustomYAxisTick />}
             />
 
             <Tooltip
