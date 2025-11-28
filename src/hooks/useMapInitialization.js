@@ -4,7 +4,7 @@ import maplibregl from 'maplibre-gl';
 const DEFAULT_CENTER = [76.886, 43.238];
 const DEFAULT_ZOOM = 11;
 const API_KEY = '9zZ4lJvufSPFPoOGi6yZ';
-
+ 
 export const useMapInitialization = (containerRef) => {
   const mapRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +37,8 @@ export const useMapInitialization = (containerRef) => {
         type: "fill",
         source: "almaty-districts",
         paint: {
-          "fill-color": "#4ade80",
+          // "fill-color": "#4ade80",
+          "fill-color": "#7bcbdbff",
           "fill-opacity": 0.25
         }
       });
@@ -47,7 +48,8 @@ export const useMapInitialization = (containerRef) => {
         type: "line",
         source: "almaty-districts",
         paint: {
-          "line-color": "#166534",
+          // "line-color": "#166534",
+          "line-color": "#3a659cff",
           "line-width": 2
         }
       });
@@ -72,28 +74,36 @@ export const useMapInitialization = (containerRef) => {
     });
   };
 
-  const highlightDistrict = (districtName) => {
+  const highlightDistrict = (districtNames) => {
     if (!mapRef.current) return;
 
-    if (!districtName) {
-      // Show all districts again
-      mapRef.current.setFilter("district-fill", null);
-      mapRef.current.setFilter("district-outline", null);
+    const map = mapRef.current;
+
+    // If input is empty → show everything
+    if (!districtNames || districtNames.length === 0) {
+      map.setFilter("district-fill", null);
+      map.setFilter("district-outline", null);
       return;
     }
 
-    mapRef.current.setFilter("district-fill", [
-      "any",
-      ["==", ["get", "name"], districtName],
-      ["==", ["get", "nameRu"], districtName],
-    ]);
+    // Ensure we always work with an array
+    const names = Array.isArray(districtNames)
+      ? districtNames
+      : [districtNames];
 
-    mapRef.current.setFilter("district-outline", [
-      "any",
-      ["==", ["get", "name"], districtName],
-      ["==", ["get", "nameRu"], districtName],
-    ]);
+    // Build OR filter for MULTIPLE districts
+    const filters = ["any"];
+
+    names.forEach((d) => {
+      filters.push(["==", ["get", "name"], d]);
+      filters.push(["==", ["get", "nameRu"], d]);
+    });
+
+    // Apply filters
+    map.setFilter("district-fill", filters);
+    map.setFilter("district-outline", filters);
   };
+
 
   return { mapRef, isLoading, zoomIn, zoomOut, resetView, highlightDistrict };
 };

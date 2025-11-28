@@ -27,6 +27,12 @@ export const clearFeatureStates = (map, polygonMapping) => {
 };
 
 export const setupPolygonLayers = (map, polygons) => {
+
+  // 🛑 No polygons? Then stop right here.
+  if (!polygons || !polygons.features || polygons.features.length === 0) {
+    return; // skip everything
+  }
+
   if (map.getSource('policlinic-polygons')) {
     map.getSource('policlinic-polygons').setData(polygons);
   } else {
@@ -43,13 +49,13 @@ export const setupPolygonLayers = (map, polygons) => {
         'fill-color': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          '#22c55e', // Green color for selected polygons (green-500)
+          '#22c55e',
           ['get', 'original_color'],
         ],
         'fill-opacity': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          0.5, // Increased opacity for better visibility
+          0.5,
           0.1,
         ],
       },
@@ -63,25 +69,26 @@ export const setupPolygonLayers = (map, polygons) => {
         'line-color': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          '#16a34a', // Darker green outline for selected (green-600)
+          '#16a34a',
           ['get', 'color'],
         ],
         'line-width': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          3, // Thicker border when selected
+          3,
           1.5,
         ],
         'line-opacity': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          0.8, // More visible when selected
+          0.8,
           0.4,
         ],
       },
     });
   }
 };
+
 
 export const setupPointLayers = (map, points) => {
   if (map.getSource('policlinic-points')) {
@@ -123,11 +130,9 @@ export const createPopup = (map, feature, lngLat) => {
     .setLngLat(lngLat)
     .setHTML(`
       <div class="p-2 w-[220px]">
-        
         <h3 class="font-semibold text-sm mb-1 text-gray-800">${feature.properties.name}</h3>
         <p class="text-xs text-gray-600 mb-2">${feature.properties.type}</p>
         <p class="text-xs text-gray-600 mb-2">${feature.properties.address}</p>
-        <p class="text-xs text-blue-600 font-medium">📍 Нажмите для подробностей</p>
       </div>
     `)
     .addTo(map);
@@ -143,6 +148,7 @@ export const updateFeatureStates = (
   polygonMapping
 ) => {
   // Reset previous marker if different
+  if (!map.getSource('policlinic-polygons')) return;
   if (previousMarkerId !== null && previousMarkerId !== newMarkerId) {
     try {
       map.setFeatureState(

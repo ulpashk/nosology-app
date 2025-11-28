@@ -32,22 +32,22 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
-  const districts = [
-    "Все районы",
-    "Алатауский",
-    "Алмалинский",
-    "Ауэзовский",
-    "Бостандыкский",
-    "Жетысуский",
-    "Медеуский",
-    "Наурызбайский",
-    "Турксибский",
-  ]
+  // const districts = [
+  //   "Все районы",
+  //   "Алатауский",
+  //   "Алмалинский",
+  //   "Ауэзовский",
+  //   "Бостандыкский",
+  //   "Жетысуский",
+  //   "Медеуский",
+  //   "Наурызбайский",
+  //   "Турксибский",
+  // ]
 
-  const selectDistrict = (district) => {
-    setSelectedDistrict(district)
-    setOpenDropDown(false)
-  }
+  // const selectDistrict = (district) => {
+  //   setSelectedDistrict(district)
+  //   setOpenDropDown(false)
+  // }
 
   const navigationItems = [
     { to: "/", label: "Главная", icon: Activity, color: "text-blue-500" },
@@ -79,15 +79,12 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
 
           <div className="min-w-0 text-left">
             <h1 className="text-sm sm:text-base font-bold text-[#1b1b1b] truncate">
-              Карта нозологий и смертности
+              Система мониторинга карты нозологий и смертности
             </h1>
-            <p className="text-[10px] sm:text-xs text-[#283353] truncate hidden sm:block">
-              Система мониторинга карты нозологий и смертности города Алматы
-            </p>
           </div>
 
           {/* District dropdown (desktop) */}
-          <div className="relative dropdown-container hidden sm:block sm:ml-2 lg:ml-4">
+          {/* <div className="relative dropdown-container hidden sm:block sm:ml-2 lg:ml-4">
             <button
               className="flex items-center gap-2 rounded-lg border border-[#c1d3ff] bg-[#ebf1ff] hover:bg-[#e1eaff] px-2.5 py-1.5 text-xs font-semibold text-[#283353] transition-all duration-200 hover:border-[#3772ff] hover:shadow-sm"
               onClick={() => setOpenDropDown(!openDropDown)}
@@ -125,7 +122,7 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* RIGHT SIDE */}
@@ -146,13 +143,12 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
+                  className={`rounded-md px-4 py-1.5 text-xs font-semibold transition-colors ${
                     isActive(item.to)
-                      ? "bg-gradient-to-r from-[#3772ff] to-[#2956bf] text-white shadow-md"
-                      : "text-[#283353] hover:bg-[#ebf1ff] border border-transparent hover:border-[#c1d3ff]"
+                      ? "bg-[#236FFF] text-white"
+                      : "bg-transparent text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive(item.to) ? "text-white" : "text-[#3772ff]"}`} />
                   <span className="whitespace-nowrap">{item.label}</span>
                 </Link>
               )
@@ -161,7 +157,7 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
 
           {/* Mobile dropdown and menu */}
           <div className="flex lg:hidden items-center gap-2">
-            <div className="relative dropdown-container sm:hidden">
+            {/* <div className="relative dropdown-container sm:hidden">
               <button
                 className="flex items-center gap-1 rounded-lg border border-[#c1d3ff] bg-[#ebf1ff] px-2 py-1.5 text-xs font-semibold text-[#283353] hover:bg-[#e1eaff] transition-colors"
                 onClick={() => setOpenDropDown(!openDropDown)}
@@ -192,7 +188,7 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
 
             <button
               onClick={() => setMobileMenu(!mobileMenu)}
@@ -225,7 +221,6 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
                       : "text-[#283353] hover:bg-[#ebf1ff] border border-transparent hover:border-[#c1d3ff]"
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive(item.to) ? "text-white" : "text-[#3772ff]"}`} />
                   <span>{item.label}</span>
                 </Link>
               )

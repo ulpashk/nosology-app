@@ -6,12 +6,6 @@ export default function Indicators({ totalCount, avgVisit, avgPerson, selectedDi
   const [VopData, setVopData] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  // const formatPopulation = (value) => {
-  //   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)} млн`;
-  //   if (value >= 1_000) return `${(value / 1_000).toFixed(2)} тыс`;
-  //   return value.toString();
-  // };
-
   const calcDeficitVop = (vopdata) => {
     const sum = (vopdata.peds_count*800)+(vopdata.vop_count*1700)+(vopdata.therap_count*2200);
     const diff = vopdata.total_population - sum;

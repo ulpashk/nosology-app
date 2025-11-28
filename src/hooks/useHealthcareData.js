@@ -7,17 +7,28 @@ export const useHealthcareData = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchHealthcareData = useCallback(async (selectedDistrict) => {
+  const fetchHealthcareData = useCallback(async (selectedDistricts) => {
     setIsLoading(true);
     setError(null);
 
-    const districtFilter =
-      selectedDistrict && selectedDistrict !== 'Все районы'
-        ? `district=${encodeURIComponent(`${selectedDistrict} район`)}&`
-        : '';
+    // Always normalize into array
+    const validDistricts = Array.isArray(selectedDistricts)
+      ? selectedDistricts.filter((d) => d !== "Все районы")
+      : [];
+
+    // Convert array → comma-separated list:
+    // "Бостандык район, Алмалы район, Ауэзовский район"
+    const districtQuery =
+      validDistricts.length > 0
+        ? `district=${encodeURIComponent(
+            validDistricts.map((d) => `${d} район`).join(", ")
+          )}&`
+        : "";
 
     try {
-      const response = await fetch(`${API_BASE_URL}?${districtFilter}limit=1000`);
+      const response = await fetch(
+        `${API_BASE_URL}?${districtQuery}limit=1000`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
@@ -26,13 +37,13 @@ export const useHealthcareData = () => {
       const data = await response.json();
 
       if (!data?.results?.features) {
-        throw new Error('Invalid API format: no features array');
+        throw new Error("Invalid API format: no features array");
       }
 
       const processed = processHealthcareData(data.results);
 
       return {
-        points: processed, // FeatureCollection
+        points: processed,
         stats: {
           totalCount: data.count,
         },
@@ -44,6 +55,7 @@ export const useHealthcareData = () => {
       setIsLoading(false);
     }
   }, []);
+
 
   return { fetchHealthcareData, isLoading, error };
 };

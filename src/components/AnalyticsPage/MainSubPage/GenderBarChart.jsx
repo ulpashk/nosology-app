@@ -24,7 +24,7 @@ export default function GenderDonutChart() {
   const male = data.find((d) => d.gender === "Мужской");
 
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       {/* <h2 className="text-lg font-bold mb-4">Распределение по полу</h2> */}
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Распределение по полу</h3>

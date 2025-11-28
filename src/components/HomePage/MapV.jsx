@@ -79,12 +79,18 @@ export default function MapView({
             }
 
             // Create new popup
+            // Create new popup
+            // Create new popup
             popupRef.current = createPopup(map, feature, e.lngLat);
 
+            // Close detail card when popup closes
+            popupRef.current.on("close", () => {
+              setShowDetailCard(false);
+            });
+
+            // Update states
             const newMarkerId = feature.properties.id;
 
-            // IMPORTANT: Use selectedMarkerRef.current which always has the latest value
-            // selectedMarker state might be stale in the closure
             updateFeatureStates(
               map,
               selectedMarkerRef.current,
@@ -92,8 +98,6 @@ export default function MapView({
               polygonMappingRef.current
             );
 
-            // Update both state and ref
-            // setSelectedMarker(newMarkerId);
             selectedMarkerRef.current = newMarkerId;
 
             setBuildingData(feature.properties);
@@ -140,14 +144,34 @@ export default function MapView({
     fetchAndRender();
   }, [selectedDistrict, fetchHealthcareData, setBuildingData, setShowDetailCard, setTotalCount, setTotalPopulation, setAvgVisit, setAvgPerson, mapRef]);
 
+  // useEffect(() => {
+  //   if (!mapRef.current) return;
+
+  //   const map = mapRef.current;
+  //   let selectedDistrictFull = ``;
+  //   if (selectedDistrict!=="Все районы") {
+  //     selectedDistrictFull = `${selectedDistrict} район`;
+  //   }
+
+  //   if (!map.isStyleLoaded()) {
+  //     map.once("load", () => highlightDistrict(selectedDistrictFull));
+  //   } else {
+  //     highlightDistrict(selectedDistrictFull);
+  //   }
+  // }, [selectedDistrict, mapRef, highlightDistrict]);
+
   useEffect(() => {
     if (!mapRef.current) return;
 
     const map = mapRef.current;
-    let selectedDistrictFull = ``;
-    if (selectedDistrict!=="Все районы") {
-      selectedDistrictFull = `${selectedDistrict} район`;
-    }
+
+    // Normalize array
+    const validDistricts = selectedDistrict
+      .filter(d => d !== "Все районы")
+      .map(d => `${d} район`);
+
+    const selectedDistrictFull =
+      validDistricts.length > 0 ? validDistricts : []; // an array!
 
     if (!map.isStyleLoaded()) {
       map.once("load", () => highlightDistrict(selectedDistrictFull));
@@ -155,6 +179,7 @@ export default function MapView({
       highlightDistrict(selectedDistrictFull);
     }
   }, [selectedDistrict, mapRef, highlightDistrict]);
+
 
   return (
     <div className="relative w-full h-full">

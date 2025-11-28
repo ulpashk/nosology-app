@@ -67,7 +67,7 @@ export default function DeathByYearLineGraph() {
   }, [mode, selectedYear, yearStats, avgMonthStats])
 
   return (
-    <div className="bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
+    <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Смертность по годам и по месяцам</h3>
       </div>
@@ -76,20 +76,11 @@ export default function DeathByYearLineGraph() {
         <div className="flex flex-wrap gap-2 mb-3">
           <button
             className={`px-2 py-1 text-xs rounded-lg transition-colors ${
-              mode === "avg-month" ? "bg-[#3772ff] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setMode("avg-month")}
-          >
-            Avg Month
-          </button>
-
-          <button
-            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
               mode === "year" ? "bg-[#3772ff] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
             onClick={() => setMode("year")}
           >
-            By Year
+            По годам
           </button>
 
           <button
@@ -98,8 +89,18 @@ export default function DeathByYearLineGraph() {
             }`}
             onClick={() => setMode("year-month")}
           >
-            Year Month
+            По меяцам года
           </button>
+
+          <button
+            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+              mode === "avg-month" ? "bg-[#3772ff] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+            onClick={() => setMode("avg-month")}
+          >
+            По месяцам (в среднем)
+          </button>
+
         </div>
 
         {mode === "year-month" && (
@@ -117,7 +118,7 @@ export default function DeathByYearLineGraph() {
         )}
       </div>
 
-      <div className="flex-1 p-3 min-h-0">
+      <div className="flex-1 p-3 pt-0 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <CartesianGrid stroke="#f0f0f0" />

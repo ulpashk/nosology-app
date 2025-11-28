@@ -14,7 +14,7 @@ function App() {
         <Header setSelectedDistrict={setSelectedDistrict} selectedDistrict={selectedDistrict}/>
         <main className="flex-1 overflow-hidden">
           <Routes>
-            <Route path="/" element={<HomePage selectedDistrict={selectedDistrict} />}/>
+            <Route path="/" element={<HomePage selectedDistrict={selectedDistrict}/>}/>
             <Route path="/analytics" element={<AnalyticsPage/>}/>
             <Route path="/personal" element={<PersonalPage selectedDistrict={selectedDistrict}/>}/>
           </Routes>

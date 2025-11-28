@@ -70,7 +70,7 @@ export default function MKBBarChart() {
   }, [])
 
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border-2 border-[#c1d3ff] h-full flex flex-col">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Топ-10 МКБ группы</h3>
       </div>
