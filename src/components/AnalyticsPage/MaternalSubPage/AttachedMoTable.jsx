@@ -32,7 +32,7 @@ export default function AttachedMoTable(){
                 </h3>
             </div>
             <div className="p-2 pt-0">
-                <div className="overflow-y-auto max-h-60 lg:max-h-85"> 
+                <div className="overflow-y-auto max-h-60 lg:max-h-90"> 
                     <table className="min-w-full border border-gray-100 text-sm rounded-lg">
                         <thead className="bg-gray-50 sticky top-0 z-10">
                             <tr>

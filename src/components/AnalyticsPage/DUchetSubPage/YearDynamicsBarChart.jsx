@@ -97,8 +97,8 @@ export default function YearDynamicsBarChart() {
               dataKey="index_2021"
               // dataKey="growth_percentage"
               yAxisId="right"
-              // stroke="#f81a1aff"
-              stroke="#ff7300"
+              stroke="#f81a1aff"
+              // stroke="#ff7300"
               strokeWidth={3}
               dot={{ r: 4 }}
             />
