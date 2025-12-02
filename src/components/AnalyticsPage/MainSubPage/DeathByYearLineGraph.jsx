@@ -1,6 +1,6 @@
 "use client"
 
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts"
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LabelList} from "recharts"
 import { useState, useEffect } from "react"
 
 export default function DeathByYearLineGraph() {
@@ -131,7 +131,22 @@ export default function DeathByYearLineGraph() {
                 borderRadius: "8px",
               }}
             />
-            <Line type="monotone" dataKey="count" stroke="#3772ff" strokeWidth={2} dot={{ fill: "#3772ff", r: 3 }} />
+            {/* <Line type="monotone" dataKey="count" stroke="#3772ff" strokeWidth={2} dot={{ fill: "#3772ff", r: 3 }} /> */}
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="#3772ff"
+              strokeWidth={2}
+              dot={{ fill: "#3772ff", r: 3 }}
+            >
+              <LabelList
+                dataKey="count"
+                position="top"
+                offset={6}
+                fontSize={10}
+                fontWeight={600}
+              />
+            </Line>
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -6,7 +6,7 @@ import AttachedMoTable from "../../../components/AnalyticsPage/MaternalSubPage/A
 import MaternalCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/MaternalCausesPieChart"
 import ChildCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/ChildCausesPieChart"
 
-export default function MaternalSubPage(){
+export default function MaternalSubPage(){ 
     return (
         <>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">

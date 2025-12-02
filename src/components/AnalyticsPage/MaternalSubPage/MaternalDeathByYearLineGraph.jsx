@@ -8,6 +8,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  LabelList
 } from "recharts"
 import { useState, useEffect } from "react"
 
@@ -156,7 +157,15 @@ export default function MaternalDeathByYearLineGraph() {
               stroke="#ff4d4f"
               strokeWidth={2}
               dot={{ r: 3 }}
-            />
+            >
+              <LabelList
+                dataKey="maternal"
+                position="top"
+                offset={6}
+                fontSize={10}
+                fontWeight={600}
+              />
+            </Line>
 
             {/* Child line */}
             <Line
@@ -166,7 +175,15 @@ export default function MaternalDeathByYearLineGraph() {
               stroke="#3772ff"
               strokeWidth={2}
               dot={{ r: 3 }}
-            />
+            >
+              <LabelList
+                dataKey="child"
+                position="top"
+                offset={6}
+                fontSize={10}
+                fontWeight={600}
+              />
+            </Line>
           </LineChart>
         </ResponsiveContainer>
       </div>

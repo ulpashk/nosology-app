@@ -3,10 +3,10 @@ import Indicators from "../../../components/AnalyticsPage/DUchetSubPage/Indicato
 import AgeGroupsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/AgeGroupsBarChart"
 import GenderPieChart from "../../../components/AnalyticsPage/DUchetSubPage/GenderPieChart"
 import DiagnosesBarChart from "../../../components/AnalyticsPage/DUchetSubPage/DiagnosesBarChart"
-import CauseByYearBarChart from "../../../components/AnalyticsPage/DUchetSubPage/CauseByYearBarChart"
+import ForecastLineGraph from "../../../components/AnalyticsPage/DUchetSubPage/ForecastLineGraph"
 import YearDynamicsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/YearDynamicsBarChart"
 
-export default function DUchetSubPage(){
+export default function DUchetSubPage(){ 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
@@ -23,7 +23,7 @@ export default function DUchetSubPage(){
                     <GenderPieChart />
                 </div>
                 <div className="min-h-0">
-                    <CauseByYearBarChart />
+                    <ForecastLineGraph />
                 </div>
                 <div className="min-h-0 hidden lg:block">
                     <YearDynamicsBarChart />
