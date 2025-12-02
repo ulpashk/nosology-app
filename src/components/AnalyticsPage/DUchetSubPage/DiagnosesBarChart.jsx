@@ -53,7 +53,8 @@ export default function DiagnosesBarChart() {
     async function fetchData() {
       try { 
         const response = await fetch(
-          "https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_top_diagnoses/"
+          // "https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_top_diagnoses/"
+          "https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_top_mo/"
         )
         const json = await response.json()
 
@@ -74,7 +75,7 @@ export default function DiagnosesBarChart() {
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Диагноз</h3>
+        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">ТОП-15 МО по числу пациентов</h3>
       </div>
 
       <div className="flex-1 p-3 min-h-0">
@@ -82,7 +83,7 @@ export default function DiagnosesBarChart() {
           <BarChart data={data} layout="vertical" margin={{ top: 5, right: 10, left: 60, bottom: 5 }}>
             {/* <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" /> */}
             <XAxis type="number" tick={{ fontSize: 10 }} />
-            <YAxis dataKey="diagnosis_name" type="category" width={75} tick={<CustomYAxisTick />} />
+            <YAxis dataKey="name" type="category" width={75} tick={<CustomYAxisTick />} />
             <Tooltip
               contentStyle={{
                 backgroundColor: "white",
