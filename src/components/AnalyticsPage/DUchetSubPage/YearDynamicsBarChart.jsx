@@ -88,7 +88,7 @@ export default function YearDynamicsBarChart() {
                 <Cell key={i} fill="url(#yearGradient)" />
               ))}
 
-              <LabelList dataKey="count" position="top" fontSize={10} offset={16}/>
+              <LabelList dataKey="count" position="top" fontSize={10} offset={24}/>
             </Bar>
 
             {/* Line on top */}
