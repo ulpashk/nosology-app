@@ -3,6 +3,8 @@
 import MaternalDeathByYearLineGraph from "../../../components/AnalyticsPage/MaternalSubPage/MaternalDeathByYearLineGraph"
 import DeathMoTable from "../../../components/AnalyticsPage/MaternalSubPage/DeathMoTable"
 import AttachedMoTable from "../../../components/AnalyticsPage/MaternalSubPage/AttachedMoTable"
+import MaternalCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/MaternalCausesPieChart"
+import ChildCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/ChildCausesPieChart"
 
 export default function MaternalSubPage(){
     return (
@@ -21,10 +23,10 @@ export default function MaternalSubPage(){
                 <AttachedMoTable />
             </div>
             <div className="min-h-0">
-                {/* <DeathCauseBarChart /> */}
+                <MaternalCausesPieChart />
             </div>
             <div className="min-h-0 hidden lg:block">
-                {/* <DeathMoBarChart /> */}
+                <ChildCausesPieChart />
             </div>
         </div>
     </>

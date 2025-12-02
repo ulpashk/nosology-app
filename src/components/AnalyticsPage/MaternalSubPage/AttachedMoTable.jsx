@@ -37,7 +37,7 @@ export default function AttachedMoTable(){
                         <thead className="bg-gray-50 sticky top-0 z-10">
                             <tr>
                                 <th className="px-4 py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
-                                    Attached_mo
+                                    Название прикрепленного МО
                                 </th>
                                 <th className="px-4 py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
                                     Материнская смертность

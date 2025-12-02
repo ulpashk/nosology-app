@@ -194,7 +194,7 @@ export default function MapView({
         ref={mapContainer}
       />
 
-      <MapLegend />
+      {/* <MapLegend /> */}
 
       <LoadingOverlay isLoading={isLoading} />
     </div>

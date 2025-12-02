@@ -160,16 +160,16 @@ export default function MapFilter({
         }`}
       >
         <div className="space-y-2 text-xs bg-white/95 p-3">
-          <div className="grid grid-cols-2 gap-2">
+          {/* <div className="grid grid-cols-2 gap-2"> */}
             <div className="text-center rounded-lg border bg-white shadow p-2">
-              <div className="font-semibold text-blue-500 text-[16px]">125</div>
+              <div className="font-semibold text-blue-500 text-[16px]">141</div>
               <p className="text-xs text-gray-500 mt-2">Всего поликлиник</p>
             </div>
-            <div className="text-center rounded-lg border bg-white shadow p-2">
+            {/* <div className="text-center rounded-lg border bg-white shadow p-2">
               <div className="font-semibold text-blue-500 text-[16px]">125</div>
               <p className="text-xs text-gray-500 mt-2">Главный показатель</p>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </div>
       
       {buildingData?.id && (

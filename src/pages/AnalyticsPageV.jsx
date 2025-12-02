@@ -23,7 +23,7 @@ export default function AnalyticsPage() {
           Главная
         </button>
         <button className={tabClasses("maternal")} onClick={() => setActiveTab("maternal")}>
-          Материнская смерть
+          Материнская смертность
         </button>
         <button className={tabClasses("d_uchet")} onClick={() => setActiveTab("d_uchet")}>
           Д-учет

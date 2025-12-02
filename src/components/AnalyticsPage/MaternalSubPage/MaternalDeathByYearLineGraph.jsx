@@ -37,30 +37,49 @@ export default function MaternalDeathByYearLineGraph() {
     loadAll()
   }, [])
 
+  // 🔥 Build chart data depending on mode
   useEffect(() => {
     if (mode === "year") {
       setChartData(
         stats.map((y) => ({
           label: y.year.toString(),
-          count: y.count,
+
+          // Sum for MATERnal
+          maternal:
+            (y.maternal_polyclinic_coeff || 0) +
+            (y.maternal_hospital_coeff || 0),
+
+          // Sum for CHILD
+          child:
+            (y.child_polyclinic_coeff || 0) +
+            (y.child_hospital_coeff || 0),
         }))
       )
     }
 
     if (mode === "year-month" && selectedYear) {
       const found = stats.find((y) => y.year == selectedYear)
-      if (found) {
-        const months = found.months || []
+      if (!found) return
 
-        setChartData(
-          months
-            .sort((a, b) => a.id - b.id)
-            .map((m) => ({
-              label: m.id.toString().padStart(2, "0"),
-              count: m.total,
-            }))
-        )
-      }
+      const months = found.months || []
+
+      setChartData(
+        months
+          .sort((a, b) => a.id - b.id)
+          .map((m) => ({
+            label: m.id.toString().padStart(2, "0"),
+
+            // Monthly maternal coeff sum
+            maternal:
+              (m.maternal_polyclinic_coeff || 0) +
+              (m.maternal_hospital_coeff || 0),
+
+            // Monthly child coeff sum
+            child:
+              (m.child_polyclinic_coeff || 0) +
+              (m.child_hospital_coeff || 0),
+          }))
+      )
     }
   }, [mode, selectedYear, stats])
 
@@ -68,15 +87,15 @@ export default function MaternalDeathByYearLineGraph() {
     <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
-          Материнская смертность — Годы и Месяцы
+          Материнская и Детская смертность — Годы и Месяцы
         </h3>
       </div>
 
+      {/* MODE BUTTONS */}
       <div className="p-3 border-b border-gray-50">
         <div className="flex flex-wrap gap-2 mb-3">
-          {/* YEAR BUTTON */}
           <button
-            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+            className={`px-2 py-1 text-xs rounded-lg ${
               mode === "year"
                 ? "bg-[#3772ff] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -86,9 +105,8 @@ export default function MaternalDeathByYearLineGraph() {
             По годам
           </button>
 
-          {/* YEAR-MONTH BUTTON */}
           <button
-            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+            className={`px-2 py-1 text-xs rounded-lg ${
               mode === "year-month"
                 ? "bg-[#3772ff] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -99,12 +117,11 @@ export default function MaternalDeathByYearLineGraph() {
           </button>
         </div>
 
-        {/* Show year selector only for Year-Month mode */}
         {mode === "year-month" && (
           <select
             value={selectedYear || ""}
             onChange={(e) => setSelectedYear(e.target.value)}
-            className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3772ff]"
+            className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg"
           >
             {stats.map((y) => (
               <option key={y.year} value={y.year}>
@@ -122,6 +139,7 @@ export default function MaternalDeathByYearLineGraph() {
             <CartesianGrid stroke="#f0f0f0" />
             <XAxis dataKey="label" tick={{ fontSize: 11 }} />
             <YAxis tick={{ fontSize: 11 }} />
+
             <Tooltip
               contentStyle={{
                 backgroundColor: "white",
@@ -129,12 +147,25 @@ export default function MaternalDeathByYearLineGraph() {
                 borderRadius: "8px",
               }}
             />
+
+            {/* Maternal line */}
             <Line
               type="monotone"
-              dataKey="count"
+              dataKey="maternal"
+              name="Материнская"
+              stroke="#ff4d4f"
+              strokeWidth={2}
+              dot={{ r: 3 }}
+            />
+
+            {/* Child line */}
+            <Line
+              type="monotone"
+              dataKey="child"
+              name="Детская"
               stroke="#3772ff"
               strokeWidth={2}
-              dot={{ fill: "#3772ff", r: 3 }}
+              dot={{ r: 3 }}
             />
           </LineChart>
         </ResponsiveContainer>
