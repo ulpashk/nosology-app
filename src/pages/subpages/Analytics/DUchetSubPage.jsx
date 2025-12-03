@@ -11,7 +11,7 @@ export default function DUchetSubPage(){
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
                 <div className="min-h-0">
-                    <AgeGroupsBarChart />
+                    <ForecastLineGraph />
                 </div>
                 <div className="min-h-0">
                     <DiagnosesBarChart/>
@@ -23,7 +23,7 @@ export default function DUchetSubPage(){
                     <GenderPieChart />
                 </div>
                 <div className="min-h-0">
-                    <ForecastLineGraph />
+                    <AgeGroupsBarChart />
                 </div>
                 <div className="min-h-0 hidden lg:block">
                     <YearDynamicsBarChart />
