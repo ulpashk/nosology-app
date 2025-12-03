@@ -7,20 +7,21 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
   Legend,
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export default function CauseByYearBarChart() {
-  const [data, setData] = useState([]);
+export default function CauseByYearBarChart({ year }) { // Only Year usually makes sense for a "By Year" chart
+  const [originalData, setOriginalData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     async function loadData() {
       try {
         const response = await fetch("/api/cause_by_year.json"); 
         const json = await response.json();
-        setData(json);
+        setOriginalData(json);
+        setFilteredData(json);
       } catch (err) {
         console.error("Error loading mortality stats:", err);
       }
@@ -28,6 +29,20 @@ export default function CauseByYearBarChart() {
 
     loadData();
   }, []);
+
+  // Filter local data when year changes
+  useEffect(() => {
+    if (year) {
+      // Assuming the data has a "year" field (e.g. 2021, 2022)
+      // We filter to show ONLY that year, or highlight it. 
+      // Usually "By Year" charts show trend, so maybe you don't want to filter this one?
+      // But if you do:
+      const filtered = originalData.filter(d => d.year.toString() === year.toString());
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(originalData);
+    }
+  }, [year, originalData]);
 
   const keys = [
     "Материнская смертность",
@@ -53,23 +68,18 @@ export default function CauseByYearBarChart() {
 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      
-      {/* Title */}
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Смертность по нозологиям по годам
         </h3>
       </div>
 
-      {/* Chart */}
       <div className="flex-1 p-3 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={data}
+            data={filteredData}
             margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
           >
-            {/* <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" /> */}
-
             <XAxis dataKey="year" tick={{ fontSize: 10 }} />
             <YAxis tick={{ fontSize: 10 }} />
 

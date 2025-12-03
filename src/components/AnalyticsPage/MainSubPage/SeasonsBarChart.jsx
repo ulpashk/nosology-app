@@ -7,20 +7,25 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
   Cell,
   LabelList,
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export default function SeasonsBarChart() {
+export default function SeasonsBarChart({ year, month }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
+      // Construct Query String
+      const params = new URLSearchParams();
+      if (year) params.append("year", year);
+      if (month) params.append("month", month);
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+
       try {
         const response = await fetch(
-          "https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_season_severity/"
+          `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_season_severity/${queryString}`
         );
         const json = await response.json();
 
@@ -31,7 +36,7 @@ export default function SeasonsBarChart() {
     }
 
     fetchData();
-  }, []);
+  }, [year, month]); // Add dependencies
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -48,8 +53,6 @@ export default function SeasonsBarChart() {
             layout="horizontal"
             margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
           >
-            {/* <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" /> */}
-
             <XAxis 
               dataKey="label" 
               tick={{ fontSize: 10 }} 

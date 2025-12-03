@@ -8,7 +8,6 @@ function wrapText(text, maxCharsPerLine = 25) {
   const words = text.split(" ");
   const lines = [];
   let currentLine = "";
-
   words.forEach((word) => {
     if ((currentLine + word).length <= maxCharsPerLine) {
       currentLine += word + " ";
@@ -17,16 +16,13 @@ function wrapText(text, maxCharsPerLine = 25) {
       currentLine = word + " ";
     }
   });
-
   if (currentLine) lines.push(currentLine.trim());
-
   return lines;
 }
 
 // ---- CUSTOM Y-AXIS TICK ----
 const CustomYAxisTick = ({ x, y, payload }) => {
   const lines = wrapText(payload.value);
-
   return (
     <g transform={`translate(${x},${y})`}>
       {lines.map((line, index) => (
@@ -46,14 +42,20 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function DeathCauseBarChart() {
+export default function DeathCauseBarChart({ year, month }) { // Accept props
   const [data, setData] = useState([])
 
   useEffect(() => {
     async function fetchData() {
+      // Build Query String
+      const params = new URLSearchParams();
+      if (year) params.append("year", year);
+      if (month) params.append("month", month);
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+
       try { 
         const response = await fetch(
-          "https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_death_cause/"
+          `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_death_cause/${queryString}`
         )
         const json = await response.json()
 
@@ -69,7 +71,7 @@ export default function DeathCauseBarChart() {
     }
 
     fetchData()
-  }, [])
+  }, [year, month]) // Add deps
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">

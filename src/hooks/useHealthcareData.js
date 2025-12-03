@@ -3,24 +3,21 @@ import { useState, useCallback } from "react";
 const API_BASE_URL =
   "https://admin.smartalmaty.kz/api/v1/healthcare/clinic-areas/";
 
-
-
 const getDeathCountColor = (value) => {
   if (value > 1700) return "#ef4444";
   if (value < 900) return "#22c55e";
   return "#eab308";
 };
 
-
 export const useHealthcareData = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchHealthcareData = useCallback(async (selectedDistrict) => {
+  // 1. Accept selectedYear as an argument
+  const fetchHealthcareData = useCallback(async (selectedDistrict, selectedYear) => {
     setIsLoading(true);
     setError(null);
 
-    // Filter out "All districts" or invalid entries
     const validDistricts = Array.isArray(selectedDistrict)
       ? selectedDistrict.filter((d) => d !== "Все районы")
       : [];
@@ -30,9 +27,13 @@ export const useHealthcareData = () => {
         ? `district=${encodeURIComponent(validDistricts.join(","))}&`
         : "";
 
+    // 2. Build the Year Query
+    const yearQuery = selectedYear ? `year=${selectedYear}&` : "";
+
     try {
+      // 3. Append yearQuery to URL
       const response = await fetch(
-        `${API_BASE_URL}?${districtQuery}limit=1000`
+        `${API_BASE_URL}?${districtQuery}${yearQuery}limit=1000`
       );
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -48,7 +49,6 @@ export const useHealthcareData = () => {
         totalPopulation: data.total_population,
         avgVisit: data.visit_avg,
         avgPerson: data.per_1_person,
-        // Extra fields available if needed:
         projectedPopulation: data.population_projected,
         overallCoverage: data.overall_coverage_ratio,
         deathCertificateCount: data.death_certificate_count, 
@@ -72,16 +72,13 @@ const processClinicAreaData = (items) => {
   const polygonFeatures = [];
   const pointFeatures = [];
   
-  // Helper: Create a dictionary where Key = 'med' ID, Value = Array of Feature IDs
-  // Example: { "38": [2, 5, 10], "40": [1] }
   const medToIdsGroup = {};
 
-  // 1. First Pass: Create Features and build the MED grouping
   items.forEach((item) => {
     // --- Polygon ---
     const polygonFeature = {
       type: "Feature",
-      geometry: item.geom, // MultiPolygon
+      geometry: item.geom, 
       id: item.id,
       properties: {
         id: item.id,
@@ -92,7 +89,6 @@ const processClinicAreaData = (items) => {
         visits: item.visit_avg,
         coverage: item.overall_coverage_ratio,
         med: item.med,
-        // Save original color for fallback if needed
         color: ['#DCDCDC'],
         original_color: ['#DCDCDC'] 
       },
@@ -102,7 +98,7 @@ const processClinicAreaData = (items) => {
     // --- Point ---
     const pointFeature = {
       type: "Feature",
-      geometry: item.facility_coordinates, // Point
+      geometry: item.facility_coordinates, 
       id: item.id,
       properties: {
         id: item.id,
@@ -120,32 +116,26 @@ const processClinicAreaData = (items) => {
         per_1_person: item.per_1_person,
         total_population: item.total_population,
         overall_coverage_ratio: item.overall_coverage_ratio,
-        // color: "#e63946",
+        // The color will now automatically update based on the year's data
         color: getDeathCountColor(item.death_certificate_count),
       },
     };
     pointFeatures.push(pointFeature);
 
-    // --- Grouping Logic ---
     if (item.med !== null && item.med !== undefined) {
       if (!medToIdsGroup[item.med]) {
         medToIdsGroup[item.med] = [];
       }
-      // Add this item's ID to the list for this MED group
       medToIdsGroup[item.med].push(item.id);
     }
   });
 
-  // 2. Second Pass: Build the mapping expected by MapView
-  // Mapping: Key = Point ID (clicked) -> Value = Array of Polygon IDs to highlight
   const polygonMapping = {};
   
   items.forEach((item) => {
-    // If this item has a med field, map its ID to the entire group of IDs sharing that med
     if (item.med && medToIdsGroup[item.med]) {
       polygonMapping[item.id] = medToIdsGroup[item.med];
     } else {
-      // Fallback: if no med group, map to itself
       polygonMapping[item.id] = [item.id];
     }
   });

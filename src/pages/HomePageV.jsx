@@ -14,7 +14,9 @@ export default function HomePage() {
   const [avgVisit, setAvgVisit] = useState(0)
   const [avgPerson, setAvgPerson] = useState(0)
   const [selectedDistrict, setSelectedDistrict] = useState(["Все районы"])
+  const [selectedYear, setSelectedYear] = useState(null)
   const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false)
+  const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
   const [generalStats, setGeneralStats] = useState({})
   const [enginNodes, setEnginNodes] = useState({
     "Родильные дома": false,
@@ -51,6 +53,7 @@ export default function HomePage() {
           setAvgVisit={setAvgVisit}
           setAvgPerson={setAvgPerson}
           setGeneralStats={setGeneralStats}
+          selectedYear={selectedYear}
         />
       </div>
 
@@ -64,6 +67,10 @@ export default function HomePage() {
             setDistrictDropdownOpen={setDistrictDropdownOpen}
             buildingData={buildingData}
             generalStats={generalStats}
+            yearDropdownOpen={yearDropdownOpen}
+            setYearDropdownOpen={setYearDropdownOpen}
+            selectedYear={selectedYear}
+            setSelectedYear={setSelectedYear}
           />
       </div>
     </div>

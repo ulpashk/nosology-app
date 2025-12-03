@@ -19,7 +19,6 @@ function wrapText(text, maxCharsPerLine = 25) {
   });
 
   if (currentLine) lines.push(currentLine.trim());
-
   return lines;
 }
 
@@ -46,14 +45,20 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function MKBBarChart() {
+export default function MKBBarChart({ year, month }) { // Accept props
   const [mkbData, setMkbData] = useState([])
 
   useEffect(() => { 
     async function fetchMKB() {
+      // Build Query String
+      const params = new URLSearchParams();
+      if (year) params.append("year", year);
+      if (month) params.append("month", month);
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+
       try {
         const response = await fetch(
-          "https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_mkb_group/"
+          `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_mkb_group/${queryString}`
         )
         const data = await response.json()
 
@@ -67,7 +72,7 @@ export default function MKBBarChart() {
       }
     }
     fetchMKB()
-  }, [])
+  }, [year, month]) // Add deps
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">

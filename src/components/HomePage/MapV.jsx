@@ -19,6 +19,8 @@ export default function MapView({
   setBuildingData,
   setShowDetailCard,
   selectedDistrict,
+  // 1. Receive selectedYear prop
+  selectedYear, 
   setTotalCount,
   setTotalPopulation,
   setAvgVisit,
@@ -29,24 +31,25 @@ export default function MapView({
   const { mapRef, isLoading: mapLoading, zoomIn, zoomOut, resetView, highlightDistrict} = useMapInitialization(mapContainer);
   const { fetchHealthcareData, isLoading: dataLoading } = useHealthcareData();
 
-  // const [selectedMarker, setSelectedMarker] = useState(null);
-  const selectedMarkerRef = useRef(null); // Track current selected marker
+  const selectedMarkerRef = useRef(null); 
   const polygonMappingRef = useRef({});
   const popupRef = useRef(null);
 
   const isLoading = mapLoading || dataLoading;
 
-  // Fetch and render data when district changes
+  // Fetch and render data when district OR year changes
   useEffect(() => {
     if (!mapRef.current) return;
 
     const fetchAndRender = async () => {
-      // Reset selection when changing district
-      // setSelectedMarker(null);
+      // Reset selection when changing filters
       selectedMarkerRef.current = null;
+      // Optional: Close detail card when filter changes
+      setShowDetailCard(false); 
 
       try {
-        const data = await fetchHealthcareData(selectedDistrict);
+        // 2. Pass selectedYear to the fetch function
+        const data = await fetchHealthcareData(selectedDistrict, selectedYear);
 
         // Update stats
         setTotalCount(data.stats.totalCount);
@@ -58,13 +61,9 @@ export default function MapView({
         const addOrUpdateLayers = () => {
           const map = mapRef.current;
 
-          // Save old mapping before updating
           const oldPolygonMapping = { ...polygonMappingRef.current };
-
-          // Update polygon mapping FIRST
           polygonMappingRef.current = data.polygonMapping;
 
-          // Clear all feature states using old mapping
           clearFeatureStates(map, oldPolygonMapping);
 
           setupPolygonLayers(map, data.polygons);
@@ -75,19 +74,16 @@ export default function MapView({
             const feature = e.features?.[0];
             if (!feature) return;
 
-            // Remove existing popup
             if (popupRef.current) {
               popupRef.current.remove();
             }
 
             popupRef.current = createPopup(map, feature, e.lngLat);
 
-            // Close detail card when popup closes
             popupRef.current.on("close", () => {
               setShowDetailCard(false);
             });
 
-            // Update states
             const newMarkerId = feature.properties.id;
 
             updateFeatureStates(
@@ -102,7 +98,6 @@ export default function MapView({
             setBuildingData(feature.properties);
             setShowDetailCard(true);
 
-            // Fly to location
             map.flyTo({
               center: feature.geometry.coordinates,
               zoom: Math.max(map.getZoom(), 13),
@@ -110,7 +105,6 @@ export default function MapView({
             });
           };
 
-          // Hover handlers
           const handleMouseEnter = () => {
             map.getCanvas().style.cursor = 'pointer';
           };
@@ -119,12 +113,10 @@ export default function MapView({
             map.getCanvas().style.cursor = '';
           };
 
-          // Remove existing listeners
           map.off('click', 'policlinic-points-circle', handlePointClick);
           map.off('mouseenter', 'policlinic-points-circle', handleMouseEnter);
           map.off('mouseleave', 'policlinic-points-circle', handleMouseLeave);
 
-          // Attach new listeners
           map.on('click', 'policlinic-points-circle', handlePointClick);
           map.on('mouseenter', 'policlinic-points-circle', handleMouseEnter);
           map.on('mouseleave', 'policlinic-points-circle', handleMouseLeave);
@@ -141,7 +133,9 @@ export default function MapView({
     };
 
     fetchAndRender();
-  }, [selectedDistrict, fetchHealthcareData, setBuildingData, setShowDetailCard, setTotalCount, setTotalPopulation, setAvgVisit, setAvgPerson, mapRef]);
+    
+    // 3. Add selectedYear to dependency array so it refetches when year changes
+  }, [selectedDistrict, selectedYear, fetchHealthcareData, setBuildingData, setShowDetailCard, setTotalCount, setTotalPopulation, setAvgVisit, setAvgPerson, setGeneralStats, mapRef]);
 
 
   useEffect(() => {
@@ -149,13 +143,12 @@ export default function MapView({
 
     const map = mapRef.current;
 
-    // Normalize array
     const validDistricts = selectedDistrict
       .filter(d => d !== "Все районы")
       .map(d => `${d} район`);
 
     const selectedDistrictFull =
-      validDistricts.length > 0 ? validDistricts : []; // an array!
+      validDistricts.length > 0 ? validDistricts : [];
 
     if (!map.isStyleLoaded()) {
       map.once("load", () => highlightDistrict(selectedDistrictFull));
