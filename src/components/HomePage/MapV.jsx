@@ -19,10 +19,11 @@ export default function MapView({
   setBuildingData,
   setShowDetailCard,
   selectedDistrict,
-  setTotalCount, 
+  setTotalCount,
   setTotalPopulation,
   setAvgVisit,
   setAvgPerson,
+  setGeneralStats,
 }) {
   const mapContainer = useRef(null);
   const { mapRef, isLoading: mapLoading, zoomIn, zoomOut, resetView, highlightDistrict} = useMapInitialization(mapContainer);
@@ -52,6 +53,7 @@ export default function MapView({
         setTotalPopulation(data.stats.totalPopulation);
         setAvgVisit(data.stats.avgVisit);
         setAvgPerson(data.stats.avgPerson);
+        setGeneralStats(data.statsgeneral);
 
         const addOrUpdateLayers = () => {
           const map = mapRef.current;
@@ -78,9 +80,6 @@ export default function MapView({
               popupRef.current.remove();
             }
 
-            // Create new popup
-            // Create new popup
-            // Create new popup
             popupRef.current = createPopup(map, feature, e.lngLat);
 
             // Close detail card when popup closes
@@ -99,7 +98,7 @@ export default function MapView({
             );
 
             selectedMarkerRef.current = newMarkerId;
-
+ 
             setBuildingData(feature.properties);
             setShowDetailCard(true);
 
@@ -144,21 +143,6 @@ export default function MapView({
     fetchAndRender();
   }, [selectedDistrict, fetchHealthcareData, setBuildingData, setShowDetailCard, setTotalCount, setTotalPopulation, setAvgVisit, setAvgPerson, mapRef]);
 
-  // useEffect(() => {
-  //   if (!mapRef.current) return;
-
-  //   const map = mapRef.current;
-  //   let selectedDistrictFull = ``;
-  //   if (selectedDistrict!=="Все районы") {
-  //     selectedDistrictFull = `${selectedDistrict} район`;
-  //   }
-
-  //   if (!map.isStyleLoaded()) {
-  //     map.once("load", () => highlightDistrict(selectedDistrictFull));
-  //   } else {
-  //     highlightDistrict(selectedDistrictFull);
-  //   }
-  // }, [selectedDistrict, mapRef, highlightDistrict]);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -194,7 +178,7 @@ export default function MapView({
         ref={mapContainer}
       />
 
-      {/* <MapLegend /> */}
+      <MapLegend />
 
       <LoadingOverlay isLoading={isLoading} />
     </div>

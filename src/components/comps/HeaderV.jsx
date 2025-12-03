@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom"
 import { HeartPulse, MapPinned, Menu, X, ChevronDown, Activity, User, Users, BarChart2 } from "lucide-react"
 import { useState, useEffect } from "react"
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose} from "../ui/dialog"
-import DoctorsCapacityMethodology from "../Methodology/DoctorsCapacityMethodology"
+import NosologyMethodology from "../Methodology/NosologyMethodology"
 
 export default function Header({ setSelectedDistrict, selectedDistrict }) {
   const [openDropDown, setOpenDropDown] = useState(false)
@@ -32,28 +32,9 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
-  // const districts = [
-  //   "Все районы",
-  //   "Алатауский",
-  //   "Алмалинский",
-  //   "Ауэзовский",
-  //   "Бостандыкский",
-  //   "Жетысуский",
-  //   "Медеуский",
-  //   "Наурызбайский",
-  //   "Турксибский",
-  // ]
-
-  // const selectDistrict = (district) => {
-  //   setSelectedDistrict(district)
-  //   setOpenDropDown(false)
-  // }
-
   const navigationItems = [
     { to: "/", label: "Главная", icon: Activity, color: "text-blue-500" },
     { to: "/analytics", label: "Аналитика", icon: BarChart2, color: "text-green-500" },
-    // { to: "/personal", label: "Персонал", icon: Users, color: "text-purple-500" },
-    // { to: "/recomendations", label: "Рекомендации", icon: MapPinned, color: "text-purple-500" },
   ]
 
   return (
@@ -79,7 +60,7 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
 
           <div className="min-w-0 text-left">
             <h1 className="text-sm sm:text-base font-bold text-[#1b1b1b] truncate">
-              Система мониторинга карты нозологий и смертности
+              Карта нозологий и смертности
             </h1>
           </div>
 
@@ -234,11 +215,11 @@ export default function Header({ setSelectedDistrict, selectedDistrict }) {
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto text-left">
         <DialogHeader className="sticky top-0 bg-white shadow-sm z-50">
           <DialogTitle className="text-2xl">
-            Методология расчета мощности и дефицита врачей в поликлиниках города Алматы
+            Карта нозологий и смертности
           </DialogTitle>
           <DialogClose onOpenChange={setIsMethodologyOpen} />
         </DialogHeader>
-        <div className="mt-4"><DoctorsCapacityMethodology/></div>
+        <div className="mt-4"><NosologyMethodology/></div>
       </DialogContent>
     </Dialog>
     </>

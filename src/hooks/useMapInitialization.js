@@ -27,7 +27,7 @@ export const useMapInitialization = (containerRef) => {
     mapRef.current.on('load', () => {
       setIsLoading(false);
 
-      mapRef.current.addSource("almaty-districts", {
+      mapRef.current.addSource("almaty-districtss", {
         type: "geojson",
         data: "/data/almaty_districts.json",
       });

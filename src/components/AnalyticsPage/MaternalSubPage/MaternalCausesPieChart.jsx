@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import {
   PieChart,
   Pie,
@@ -22,7 +22,34 @@ export default function MaternalCausesPieChart() {
       )
   }, [])
 
-  // generate soft random pastel colors
+  // 1. Process data: Group items where value is 1 into "Прочее"
+  const chartData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    const groupedData = [];
+    let othersCount = 0;
+
+    data.forEach((item) => {
+      if (item.value === 1) {
+        othersCount += item.value; // Sum up single occurrences
+      } else {
+        groupedData.push(item);
+      }
+    });
+
+    // If there are items in the 'Other' category, add them as a single slice
+    if (othersCount > 0) {
+      groupedData.push({
+        id: "other",
+        mkb_code: "Прочее",
+        diagnosis: "Прочие причины (единичные случаи)",
+        value: othersCount,
+      });
+    }
+
+    return groupedData;
+  }, [data]);
+
   const COLORS = [
     "#4B8DF8",
     "#FF7EBF",
@@ -33,6 +60,27 @@ export default function MaternalCausesPieChart() {
     "#59C3C3",
     "#FFA6A6",
   ]
+
+  // 2. Custom Tooltip to show Diagnosis and Value
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { diagnosis, value } = payload[0].payload;
+      return (
+        <div className="bg-white p-3 border border-blue-200 rounded-lg shadow-lg max-w-[250px]">
+          <p className="text-xs font-semibold text-gray-800 mb-1">{diagnosis}</p>
+          <p className="text-sm text-blue-600">
+            Количество: <span className="font-bold">{value}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // 3. Label function to show Percentage
+  const renderCustomizedLabel = ({ percent }) => {
+    return `${(percent * 100).toFixed(0)}%`;
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -45,31 +93,25 @@ export default function MaternalCausesPieChart() {
       <div className="flex-1 p-3 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #c1d3ff",
-                borderRadius: "8px",
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: "12px" }} />
+            <Tooltip content={<CustomTooltip />} />
+            {/* <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} /> */}
 
             <Pie
-              data={data}
+              data={chartData}
               dataKey="value"
-              nameKey="mkb_code"
+              nameKey="mkb_code" // Uses 'mkb_code' or 'Прочее' for the Legend
               cx="50%"
               cy="50%"
-              outerRadius={90}     // ⬅️ NO innerRadius → NOT a donut
+              outerRadius={90}
               paddingAngle={3}
               startAngle={40}
               endAngle={400}
               labelLine={true}
-              label={({ value }) => `${value}`}
+              label={renderCustomizedLabel} // Renders percentage
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell
-                  key={index}
+                  key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                 />
               ))}

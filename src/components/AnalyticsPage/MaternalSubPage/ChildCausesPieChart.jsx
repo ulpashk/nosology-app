@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts"
 
-export default function ChildCausesPieChart() {
+export default function ChildCausesPieChart() { 
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -34,6 +34,25 @@ export default function ChildCausesPieChart() {
     "#FFA6A6",
   ]
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { diagnosis, value } = payload[0].payload;
+      return (
+        <div className="bg-white p-3 border border-blue-200 rounded-lg shadow-lg max-w-[250px]">
+          <p className="text-xs font-semibold text-gray-800 mb-1">{diagnosis}</p>
+          <p className="text-sm text-blue-600">
+            Количество: <span className="font-bold">{value}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderCustomizedLabel = ({ percent }) => {
+    return `${(percent * 100).toFixed(0)}%`;
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
@@ -45,14 +64,8 @@ export default function ChildCausesPieChart() {
       <div className="flex-1 p-3 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #c1d3ff",
-                borderRadius: "8px",
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: "12px" }} />
+            <Tooltip content={<CustomTooltip />} />
+            {/* <Legend wrapperStyle={{ fontSize: "12px" }} /> */}
 
             <Pie
               data={data}
@@ -65,7 +78,7 @@ export default function ChildCausesPieChart() {
               startAngle={40}
               endAngle={400}
               labelLine={true}
-              label={({ value }) => `${value}`}
+              label={renderCustomizedLabel}
             >
               {data.map((entry, index) => (
                 <Cell

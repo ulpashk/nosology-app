@@ -2,25 +2,25 @@ export const MapLegend = () => {
   const legendItems = [
     {
       color: 'bg-green-500',
-      label: 'Оптимальная загруженность',
-      range: '(0.90-1.00)',
+      label: 'Низкий',
+      range: '(<900)',
     },
     {
       color: 'bg-yellow-400',
-      label: 'Низкая загруженность',
-      range: '(<0.90)',
+      label: 'Средний',
+      range: '(900-1700)',
     },
     {
       color: 'bg-red-500',
-      label: 'Высокая загруженность',
-      range: '(>1.00)',
+      label: 'Высокий',
+      range: '(>1700)',
     },
   ];
 
   return (
-    <div className="absolute bottom-4 left-4 md:bottom-6 md:left-auto md:right-4 z-20 bg-white/95 backdrop-blur-md p-2.5 md:p-3 rounded-lg shadow-lg max-w-[200px] md:max-w-none">
+    <div className="absolute bottom-0 right-0 p-3 rounded-lg border bg-white/50 backdrop-blur-md">
       <div className="font-bold text-[#1b1b1b] mb-2 md:mb-2.5 text-xs md:text-sm">
-        Легенда по загруженности
+        Легенда по кол-ву смертности
       </div>
       {legendItems.map((item, index) => (
         <div key={index} className="flex items-center mb-1.5 md:mb-2 last:mb-0">

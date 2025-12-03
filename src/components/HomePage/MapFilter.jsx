@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import MapFilterIndicators from "./MapFilterIndicator";
+import DetailedInfo from "./DetailedInfo";
 
 export default function MapFilter({
   setSelectedDistrict,
@@ -7,7 +9,8 @@ export default function MapFilter({
   selectedDistrict,
   enginNodes,
   setEnginNodes, 
-  buildingData
+  buildingData, 
+  generalStats
 }) {
   const [filtersHidden, setFiltersHidden] = useState(false);
   const [openSections, setOpenSections] = useState({
@@ -74,7 +77,7 @@ export default function MapFilter({
 
  return (
   <>
-    <div className="flex flex-col max-h-[50vh] bg-white/95 backdrop-blur-sm rounded-xl border shadow-lg overflow-hidden">
+    <div className="flex flex-col max-h-[80vh] bg-white/95 backdrop-blur-sm rounded-xl border shadow-lg overflow-hidden">
       {/* Sticky Header + District Selector */}
       <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b">
         <div className="flex items-center justify-between px-4 pt-3 pb-2 font-semibold text-base border-b-0">
@@ -159,35 +162,19 @@ export default function MapFilter({
           filtersHidden ? "max-h-0 opacity-0 overflow-hidden" : "max-h-[600px] opacity-100 overflow-y-auto"
         }`}
       >
-        <div className="space-y-2 text-xs bg-white/95 p-3">
-          {/* <div className="grid grid-cols-2 gap-2"> */}
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-              <div className="font-semibold text-blue-500 text-[16px]">141</div>
-              <p className="text-xs text-gray-500 mt-2">Всего поликлиник</p>
-            </div>
-            {/* <div className="text-center rounded-lg border bg-white shadow p-2">
-              <div className="font-semibold text-blue-500 text-[16px]">125</div>
-              <p className="text-xs text-gray-500 mt-2">Главный показатель</p>
-            </div> */}
-          {/* </div> */}
-        </div>
-      
-      {buildingData?.id && (
-        <div className="space-y-2 text-xs bg-white/95 p-3 border-t">
-          <h3 className="font-semibold text-gray-900">{buildingData.name}</h3>
-          <p className="text-gray-500">{buildingData.district}, {buildingData.address} </p>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-              <div className="font-semibold">{buildingData.address || "-"}</div>
-              <p className="text-xs text-gray-500">Адрес</p>
-            </div>
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-              <div className="font-semibold">{buildingData.type || "-"}</div>
-              <p className="text-xs text-gray-500">Тип</p>
-            </div>
+        {/* <div className="space-y-2 text-xs bg-white/95 p-3">
+          <div className="text-center rounded-lg border bg-white shadow p-2">
+            <div className="font-semibold text-blue-500 text-[16px]">141</div>
+            <p className="text-xs text-gray-500 mt-2">Всего поликлиник</p>
           </div>
-        </div>
+        </div> */}
+      <MapFilterIndicators
+        generalStats={generalStats}
+        selectedDistrict={selectedDistrict}
+      />
+
+      {buildingData?.id && (
+        <DetailedInfo buildingData={buildingData}/>
       )}
 
     </div>

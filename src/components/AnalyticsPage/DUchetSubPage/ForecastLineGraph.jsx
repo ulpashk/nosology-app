@@ -24,7 +24,14 @@ export default function ForecastLineGraph() {
 
         const rows = json.results || [];
 
-        const merged = rows.map((item) => ({
+        // 1. Filter data starting from year 2021
+        const filteredRows = rows.filter((item) => {
+          const year = parseInt(item.date.substring(0, 4));
+          return year >= 2021; // Change this to 2022 if that was intended
+        });
+
+        // 2. Map the filtered data
+        const merged = filteredRows.map((item) => ({
           date: item.date.substring(0, 7), // YYYY-MM
 
           // Actual values
@@ -58,7 +65,12 @@ export default function ForecastLineGraph() {
           <LineChart data={chartData}>
             <CartesianGrid stroke="#eaeaea" />
 
-            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+            <XAxis 
+              dataKey="date" 
+              tick={{ fontSize: 10 }} 
+              // Optional: reduce clutter if too many dates appear
+              minTickGap={30}
+            />
             <YAxis tick={{ fontSize: 10 }} />
 
             <Tooltip

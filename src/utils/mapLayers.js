@@ -3,35 +3,29 @@ import maplibregl from 'maplibre-gl';
 export const clearFeatureStates = (map, polygonMapping) => {
   if (!map.getSource('policlinic-polygons')) return;
 
+  // Clear Polygons
   Object.values(polygonMapping).flat().forEach((polygonId) => {
     try {
       map.removeFeatureState({
         source: 'policlinic-polygons',
         id: polygonId,
       });
-    } catch (err) {
-      // Silently ignore errors
-    }
+    } catch (err) { /* ignore */ }
   });
 
+  // Clear Points (Iterate keys of mapping which are point IDs)
   Object.keys(polygonMapping).forEach((pointId) => {
     try {
       map.removeFeatureState({
         source: 'policlinic-points',
         id: parseInt(pointId),
       });
-    } catch (err) {
-      // Silently ignore errors
-    }
+    } catch (err) { /* ignore */ }
   });
 };
 
 export const setupPolygonLayers = (map, polygons) => {
-
-  // 🛑 No polygons? Then stop right here.
-  if (!polygons || !polygons.features || polygons.features.length === 0) {
-    return; // skip everything
-  }
+  if (!polygons || !polygons.features || polygons.features.length === 0) return;
 
   if (map.getSource('policlinic-polygons')) {
     map.getSource('policlinic-polygons').setData(polygons);
@@ -55,8 +49,8 @@ export const setupPolygonLayers = (map, polygons) => {
         'fill-opacity': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          0.5,
-          0.1,
+          0.6, // Higher opacity when selected
+          0.2,
         ],
       },
     });
@@ -69,26 +63,24 @@ export const setupPolygonLayers = (map, polygons) => {
         'line-color': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          '#16a34a',
+          '#16a34a', // Darker green outline
           ['get', 'color'],
         ],
         'line-width': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
           3,
-          1.5,
-        ],
-        'line-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'selected'], false],
-          0.8,
-          0.4,
+          1,
+        //   1.5,
+        // ],
+        // 'line-opacity': [
+        //   'case',
+        //   ['boolean', ['feature-state', 'selected'], false],
         ],
       },
     });
   }
 };
-
 
 export const setupPointLayers = (map, points) => {
   if (map.getSource('policlinic-points')) {
@@ -106,21 +98,19 @@ export const setupPointLayers = (map, points) => {
       paint: {
         'circle-radius': [
           'case',
-          ['boolean', ['feature-state', 'hover'], false],
-          8,
+          ['boolean', ['feature-state', 'selected'], false],
+          10, // Bigger when selected
           6,
         ],
         'circle-color': ['get', 'color'],
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': 2,
-        'circle-opacity': 0.9,
       },
     });
   }
 };
 
 export const createPopup = (map, feature, lngLat) => {
-  // const photoUrl = feature.properties.photo;
   const popup = new maplibregl.Popup({
     closeButton: true,
     closeOnClick: true,
@@ -130,9 +120,9 @@ export const createPopup = (map, feature, lngLat) => {
     .setLngLat(lngLat)
     .setHTML(`
       <div class="p-2 w-[220px]">
-        <h3 class="font-semibold text-sm mb-1 text-gray-800">${feature.properties.name}</h3>
-        <p class="text-xs text-gray-600 mb-2">${feature.properties.type}</p>
-        <p class="text-xs text-gray-600 mb-2">${feature.properties.address}</p>
+        <h3 class="font-semibold text-sm mb-1 text-gray-800">${feature.properties.facility_name || 'Clinic'}</h3>
+        <p class="text-xs text-gray-600 mb-1">Med ID: ${feature.properties.med}</p>
+        <p class="text-xs text-gray-600 mb-2">${feature.properties.address || ''}</p>
       </div>
     `)
     .addTo(map);
@@ -140,57 +130,55 @@ export const createPopup = (map, feature, lngLat) => {
   return popup;
 };
 
-
 export const updateFeatureStates = (
   map,
-  previousMarkerId,
+  oldMarkerId,
   newMarkerId,
   polygonMapping
 ) => {
-  // Reset previous marker if different
-  if (!map.getSource('policlinic-polygons')) return;
-  if (previousMarkerId !== null && previousMarkerId !== newMarkerId) {
-    try {
-      map.setFeatureState(
-        { source: 'policlinic-points', id: previousMarkerId },
-        { selected: false }
-      );
+  // 1. Deselect Old
+  if (oldMarkerId !== null && oldMarkerId !== undefined) {
+    // Deselect the point
+    if (map.getSource('policlinic-points')) {
+       map.setFeatureState(
+         { source: 'policlinic-points', id: oldMarkerId },
+         { selected: false }
+       );
+    }
 
-      const previousPolygonIds = polygonMapping[previousMarkerId] || [];
-      previousPolygonIds.forEach((polygonId) => {
-        try {
+    // Deselect associated polygons
+    if (polygonMapping[oldMarkerId]) {
+      polygonMapping[oldMarkerId].forEach((polyId) => {
+        if (map.getSource('policlinic-polygons')) {
           map.setFeatureState(
-            { source: 'policlinic-polygons', id: polygonId },
+            { source: "policlinic-polygons", id: polyId },
             { selected: false }
           );
-        } catch (err) {
-          // Silently ignore
         }
       });
-    } catch (err) {
-      console.warn('Error resetting previous marker:', err);
     }
   }
 
-  // Set new marker as selected
-  try {
-    map.setFeatureState(
-      { source: 'policlinic-points', id: newMarkerId },
-      { selected: true }
-    );
+  // 2. Select New
+  if (newMarkerId !== null && newMarkerId !== undefined) {
+    // Select the point
+    if (map.getSource('policlinic-points')) {
+      map.setFeatureState(
+        { source: 'policlinic-points', id: newMarkerId },
+        { selected: true }
+      );
+    }
 
-    const newPolygonIds = polygonMapping[newMarkerId] || [];
-    newPolygonIds.forEach((polygonId) => {
-      try {
-        map.setFeatureState(
-          { source: 'policlinic-polygons', id: polygonId },
-          { selected: true }
-        );
-      } catch (err) {
-        // Silently ignore
-      }
-    });
-  } catch (err) {
-    console.warn('Error setting new marker:', err);
+    // Select associated polygons (based on MED grouping done in useHealthcareData)
+    if (polygonMapping[newMarkerId]) {
+      polygonMapping[newMarkerId].forEach((polyId) => {
+        if (map.getSource('policlinic-polygons')) {
+          map.setFeatureState(
+            { source: "policlinic-polygons", id: polyId },
+            { selected: true }
+          );
+        }
+      });
+    }
   }
 };
