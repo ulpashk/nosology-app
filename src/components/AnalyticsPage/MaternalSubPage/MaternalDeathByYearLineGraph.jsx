@@ -38,7 +38,7 @@ export default function MaternalDeathByYearLineGraph() {
     loadAll()
   }, [])
 
-  // 🔥 Build chart data depending on mode
+
   useEffect(() => {
     if (mode === "year") {
       setChartData(
@@ -85,7 +85,7 @@ export default function MaternalDeathByYearLineGraph() {
   }, [mode, selectedYear, stats])
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Материнская и Детская смертность — Годы и Месяцы

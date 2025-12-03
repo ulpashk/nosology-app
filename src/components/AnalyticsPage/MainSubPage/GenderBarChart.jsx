@@ -7,7 +7,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
+ 
 export default function GenderDonutChart({ year, month }) {
   const [data, setData] = useState([]);
 

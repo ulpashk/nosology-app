@@ -53,7 +53,7 @@ export default function ForecastLineGraph() {
   }, []);
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Прогноз до 2030 года
