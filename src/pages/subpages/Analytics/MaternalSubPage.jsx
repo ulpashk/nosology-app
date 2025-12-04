@@ -6,7 +6,7 @@ import AttachedMoTable from "../../../components/AnalyticsPage/MaternalSubPage/A
 import MaternalCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/MaternalCausesPieChart"
 import ChildCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPage/ChildCausesPieChart"
 
-export default function MaternalSubPage(){ 
+export default function MaternalSubPage({ selectedYear, selectedMonth }){ 
     return (
         <>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
@@ -14,19 +14,31 @@ export default function MaternalSubPage(){
                 <MaternalDeathByYearLineGraph />
             </div>
             <div className="min-h-0">
-                <DeathMoTable/>
+                <DeathMoTable 
+                    year={selectedYear} 
+                    month={selectedMonth}
+                />
             </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 h-[50%]">
             <div className="min-h-0">
-                <AttachedMoTable />
+                <AttachedMoTable 
+                    year={selectedYear} 
+                    month={selectedMonth}
+                />
             </div>
             <div className="min-h-0">
-                <MaternalCausesPieChart />
+                <MaternalCausesPieChart 
+                    year={selectedYear} 
+                    month={selectedMonth}
+                />
             </div>
             <div className="min-h-0 hidden lg:block">
-                <ChildCausesPieChart />
+                <ChildCausesPieChart 
+                    year={selectedYear} 
+                    month={selectedMonth}
+                />
             </div>
         </div>
     </>

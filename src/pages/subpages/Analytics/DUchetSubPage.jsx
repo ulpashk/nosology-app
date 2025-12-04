@@ -6,7 +6,7 @@ import DiagnosesBarChart from "../../../components/AnalyticsPage/DUchetSubPage/D
 import ForecastLineGraph from "../../../components/AnalyticsPage/DUchetSubPage/ForecastLineGraph"
 import YearDynamicsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/YearDynamicsBarChart"
 
-export default function DUchetSubPage(){ 
+export default function DUchetSubPage({ selectedYear, selectedMonth }){ 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">

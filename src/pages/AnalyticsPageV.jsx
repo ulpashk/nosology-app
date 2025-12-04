@@ -78,7 +78,6 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Filters */}
-        {activeTab === "main" && (
         <div className="flex gap-2">
           
           {/* --- YEAR DROPDOWN --- */}
@@ -214,7 +213,6 @@ export default function AnalyticsPage() {
           </div>
 
         </div>
-        )}
       </div>
 
       <div className="flex-1 overflow-hidden p-4 sm:p-6 relative z-10">

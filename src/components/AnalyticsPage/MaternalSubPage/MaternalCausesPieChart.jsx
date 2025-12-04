@@ -10,17 +10,50 @@ import {
   ResponsiveContainer,
 } from "recharts"
 
-export default function MaternalCausesPieChart() {
+export default function MaternalCausesPieChart({ year, month }) {
   const [data, setData] = useState([])
 
+  // useEffect(() => {
+  //   fetch("https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_maternal_causes/")
+  //     .then((res) => res.json())
+  //     .then((json) => setData(json))
+  //     .catch((err) =>
+  //       console.error("Error fetching maternal causes stats:", err)
+  //     )
+  // }, [])
+
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+
   useEffect(() => {
-    fetch("https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_maternal_causes/")
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch((err) =>
-        console.error("Error fetching maternal causes stats:", err)
-      )
-  }, [])
+    async function fetchData() {
+      setIsLoading(true); // Start loading
+      
+      // Build Query String
+      const params = new URLSearchParams();
+      if (year) params.append("year", year);
+      if (month) params.append("month", month);
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+
+      try {
+        const response = await fetch(
+          `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_maternal_causes/${queryString}`
+        );
+        const json = await response.json();
+
+        // API returns { count, next, previous, results: [...] }
+        const results = json || [];
+
+        setData(results);
+      } catch (err) {
+        console.error("Failed to fetch MO stats:", err);
+        setData([]); // Ensure data is empty on error
+      } finally {
+        setIsLoading(false); // Stop loading regardless of success/fail
+      }
+    }
+
+    fetchData();
+  }, [year, month]);
 
   // 1. Process data: Group items where value is 1 into "Прочее"
   const chartData = useMemo(() => {
@@ -91,33 +124,59 @@ export default function MaternalCausesPieChart() {
       </div>
 
       <div className="flex-1 p-3 min-h-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Tooltip content={<CustomTooltip />} />
-            {/* <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} /> */}
-
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="mkb_code" // Uses 'mkb_code' or 'Прочее' for the Legend
-              cx="50%"
-              cy="50%"
-              outerRadius={90}
-              paddingAngle={3}
-              startAngle={40}
-              endAngle={400}
-              labelLine={true}
-              label={renderCustomizedLabel} // Renders percentage
+        {isLoading ? (
+          // Optional: Simple Loading State
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+            Загрузка...
+          </div>
+        ) : data.length === 0 ? (
+          // NO DATA STATE
+          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+            <svg
+              className="w-10 h-10 mb-2 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <p className="text-sm font-medium">Нет данных</p>
+            <p className="text-xs text-gray-400">за выбранный период</p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Tooltip content={<CustomTooltip />} />
+              {/* <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} /> */}
+
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="mkb_code" // Uses 'mkb_code' or 'Прочее' for the Legend
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                paddingAngle={3}
+                startAngle={40}
+                endAngle={400}
+                labelLine={true}
+                label={renderCustomizedLabel} // Renders percentage
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )
