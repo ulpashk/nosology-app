@@ -6,22 +6,11 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts"
 
 export default function MaternalCausesPieChart({ year, month }) {
   const [data, setData] = useState([])
-
-  // useEffect(() => {
-  //   fetch("https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_maternal_causes/")
-  //     .then((res) => res.json())
-  //     .then((json) => setData(json))
-  //     .catch((err) =>
-  //       console.error("Error fetching maternal causes stats:", err)
-  //     )
-  // }, [])
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,9 +27,7 @@ export default function MaternalCausesPieChart({ year, month }) {
           `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_maternal_causes/${queryString}`
         );
         const json = await response.json();
-
         const results = json || [];
-
         setData(results);
       } catch (err) {
         console.error("Failed to fetch maternal causes stats:", err);
@@ -94,7 +81,7 @@ export default function MaternalCausesPieChart({ year, month }) {
     if (active && payload && payload.length) {
       const { diagnosis, value } = payload[0].payload;
       return (
-        <div className="bg-white p-3 border border-blue-200 rounded-lg shadow-lg max-w-[250px]">
+        <div className="bg-white p-3 border border-blue-200 rounded-lg shadow-lg max-w-[250px] z-50 relative">
           <p className="text-xs font-semibold text-gray-800 mb-1">{diagnosis}</p>
           <p className="text-sm text-blue-600">
             Количество: <span className="font-bold">{value}</span>
@@ -110,14 +97,16 @@ export default function MaternalCausesPieChart({ year, month }) {
   };
 
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100">
+    // Main container fills height, flex column manages header vs chart area
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
+      <div className="p-4 border-b border-gray-100 flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Причины материнской смертности
         </h3>
       </div>
 
-      <div className="flex-1 p-3 min-h-0">
+      {/* flex-1 min-h-0 is crucial for Recharts to know the available space */}
+      <div className="flex-1 p-3 min-h-0 w-full">
         {isLoading ? (
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
@@ -144,20 +133,22 @@ export default function MaternalCausesPieChart({ year, month }) {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Tooltip content={<CustomTooltip />} />
-              {/* <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} /> */}
-
               <Pie
                 data={chartData}
                 dataKey="value"
                 nameKey="mkb_code"
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
+                // CHANGED: Fixed pixel value (90) replaced with percentage
+                // "75%" allows space for the labels to render without clipping
+                outerRadius="75%" 
                 paddingAngle={3}
                 startAngle={40}
                 endAngle={400}
                 labelLine={true}
-                label={renderCustomizedLabel} // Renders percentage
+                label={renderCustomizedLabel}
+                // Optional: animation helps visual smoothness on resize
+                isAnimationActive={true} 
               >
                 {chartData.map((entry, index) => (
                   <Cell

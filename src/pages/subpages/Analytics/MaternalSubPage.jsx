@@ -9,11 +9,12 @@ import ChildCausesPieChart from "../../../components/AnalyticsPage/MaternalSubPa
 export default function MaternalSubPage({ selectedYear, selectedMonth }){ 
     return (
         <>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
-            <div className="min-h-0">
+        {/* Changed h-[45%] to h-auto or h-96 for mobile, and md:h-[45%] for desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[600px] md:h-[45%] mb-4">
+            <div className="min-h-0 h-full">
                 <MaternalDeathByYearLineGraph />
             </div>
-            <div className="min-h-0">
+            <div className="min-h-0 h-full">
                 <DeathMoTable 
                     year={selectedYear} 
                     month={selectedMonth}
@@ -21,20 +22,21 @@ export default function MaternalSubPage({ selectedYear, selectedMonth }){
             </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 h-[50%]">
-            <div className="min-h-0">
+        {/* Changed h-[50%] to responsive height */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 h-[400px] md:h-[50%]">
+            <div className="min-h-0 h-full">
                 <AttachedMoTable 
                     year={selectedYear} 
                     month={selectedMonth}
                 />
             </div>
-            <div className="min-h-0">
+            <div className="min-h-0 h-full">
                 <MaternalCausesPieChart 
                     year={selectedYear} 
                     month={selectedMonth}
                 />
             </div>
-            <div className="min-h-0 hidden lg:block">
+            <div className="min-h-0 hidden lg:block h-full">
                 <ChildCausesPieChart 
                     year={selectedYear} 
                     month={selectedMonth}
