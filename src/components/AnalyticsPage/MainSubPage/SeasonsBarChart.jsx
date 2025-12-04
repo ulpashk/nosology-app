@@ -19,7 +19,6 @@ export default function SeasonsBarChart({ year, month }) {
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true); 
-      // Construct Query String
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -33,15 +32,15 @@ export default function SeasonsBarChart({ year, month }) {
 
         setData(json.seasons || []);
       } catch (err) {
-        console.error("Failed to fetch age group stats:", err);
-        setData([]); // Ensure data is empty on error
+        console.error("Failed to fetch seasons stats:", err);
+        setData([]);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchData();
-  }, [year, month]); // Add dependencies
+  }, [year, month]);
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -53,12 +52,10 @@ export default function SeasonsBarChart({ year, month }) {
 
       <div className="flex-1 p-3 min-h-0">
         {isLoading ? (
-          // Optional: Simple Loading State
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
         ) : data.length === 0 ? (
-          // NO DATA STATE
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"

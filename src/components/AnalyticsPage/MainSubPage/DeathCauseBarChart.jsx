@@ -42,14 +42,13 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function DeathCauseBarChart({ year, month }) { // Accept props
+export default function DeathCauseBarChart({ year, month }) {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
-      // Build Query String
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -61,7 +60,6 @@ export default function DeathCauseBarChart({ year, month }) { // Accept props
         )
         const json = await response.json()
 
-        // take top 10
         const top10 = json
           .sort((a, b) => b.count - a.count)
           .slice(0, 10)
@@ -69,14 +67,14 @@ export default function DeathCauseBarChart({ year, month }) { // Accept props
         setData(top10)
       } catch (err) {
         console.error("Failed to fetch cause stats", err);
-        setData([]); // Ensure data is empty on error
+        setData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
 
     fetchData()
-  }, [year, month]) // Add deps
+  }, [year, month])
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -86,12 +84,10 @@ export default function DeathCauseBarChart({ year, month }) { // Accept props
 
       <div className="flex-1 p-3 min-h-0">
         {isLoading ? (
-          // Optional: Simple Loading State
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
         ) : data.length === 0 ? (
-          // NO DATA STATE
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"

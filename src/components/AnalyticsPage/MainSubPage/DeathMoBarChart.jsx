@@ -58,9 +58,8 @@ export default function DeathMoBarChart({ year, month }) {
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); // Start loading
-      
-      // Build Query String
+      setIsLoading(true);
+
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -72,18 +71,16 @@ export default function DeathMoBarChart({ year, month }) {
         );
         const json = await response.json();
 
-        // API returns { count, next, previous, results: [...] }
         const results = json.results || [];
 
-        // Keep only top 10
         const top10 = results.slice(0, 10);
 
         setData(top10);
       } catch (err) {
         console.error("Failed to fetch MO stats:", err);
-        setData([]); // Ensure data is empty on error
+        setData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
 

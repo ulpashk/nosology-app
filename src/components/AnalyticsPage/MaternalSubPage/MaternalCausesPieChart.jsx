@@ -22,13 +22,12 @@ export default function MaternalCausesPieChart({ year, month }) {
   //     )
   // }, [])
 
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       
-      // Build Query String
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -40,22 +39,20 @@ export default function MaternalCausesPieChart({ year, month }) {
         );
         const json = await response.json();
 
-        // API returns { count, next, previous, results: [...] }
         const results = json || [];
 
         setData(results);
       } catch (err) {
-        console.error("Failed to fetch MO stats:", err);
-        setData([]); // Ensure data is empty on error
+        console.error("Failed to fetch maternal causes stats:", err);
+        setData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
 
     fetchData();
   }, [year, month]);
 
-  // 1. Process data: Group items where value is 1 into "Прочее"
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return [];
 
@@ -64,13 +61,12 @@ export default function MaternalCausesPieChart({ year, month }) {
 
     data.forEach((item) => {
       if (item.value === 1) {
-        othersCount += item.value; // Sum up single occurrences
+        othersCount += item.value;
       } else {
         groupedData.push(item);
       }
     });
 
-    // If there are items in the 'Other' category, add them as a single slice
     if (othersCount > 0) {
       groupedData.push({
         id: "other",
@@ -94,7 +90,6 @@ export default function MaternalCausesPieChart({ year, month }) {
     "#FFA6A6",
   ]
 
-  // 2. Custom Tooltip to show Diagnosis and Value
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const { diagnosis, value } = payload[0].payload;
@@ -110,7 +105,6 @@ export default function MaternalCausesPieChart({ year, month }) {
     return null;
   };
 
-  // 3. Label function to show Percentage
   const renderCustomizedLabel = ({ percent }) => {
     return `${(percent * 100).toFixed(0)}%`;
   };
@@ -125,12 +119,10 @@ export default function MaternalCausesPieChart({ year, month }) {
 
       <div className="flex-1 p-3 min-h-0">
         {isLoading ? (
-          // Optional: Simple Loading State
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
         ) : data.length === 0 ? (
-          // NO DATA STATE
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"
@@ -157,7 +149,7 @@ export default function MaternalCausesPieChart({ year, month }) {
               <Pie
                 data={chartData}
                 dataKey="value"
-                nameKey="mkb_code" // Uses 'mkb_code' or 'Прочее' for the Legend
+                nameKey="mkb_code"
                 cx="50%"
                 cy="50%"
                 outerRadius={90}

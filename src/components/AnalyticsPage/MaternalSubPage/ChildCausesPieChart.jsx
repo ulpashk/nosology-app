@@ -22,13 +22,12 @@ export default function ChildCausesPieChart({ year, month }) {
   //     )
   // }, [])
 
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       
-      // Build Query String
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -40,25 +39,22 @@ export default function ChildCausesPieChart({ year, month }) {
         );
         const json = await response.json();
 
-        // API returns { count, next, previous, results: [...] }
         const results = json || [];
 
-        // Keep only top 10
         const top10 = results.slice(0, 10);
 
         setData(top10);
       } catch (err) {
-        console.error("Failed to fetch MO stats:", err);
-        setData([]); // Ensure data is empty on error
+        console.error("Failed to fetch maternal causes stats:", err);
+        setData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
 
     fetchData();
   }, [year, month]);
 
-  // generate soft random pastel colors
   const COLORS = [
     "#4B8DF8",
     "#FF7EBF",

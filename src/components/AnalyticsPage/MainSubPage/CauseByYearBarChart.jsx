@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export default function CauseByYearBarChart({ year }) { // Only Year usually makes sense for a "By Year" chart
+export default function CauseByYearBarChart({ year }) {
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
 
@@ -30,13 +30,8 @@ export default function CauseByYearBarChart({ year }) { // Only Year usually mak
     loadData();
   }, []);
 
-  // Filter local data when year changes
   useEffect(() => {
     if (year) {
-      // Assuming the data has a "year" field (e.g. 2021, 2022)
-      // We filter to show ONLY that year, or highlight it. 
-      // Usually "By Year" charts show trend, so maybe you don't want to filter this one?
-      // But if you do:
       const filtered = originalData.filter(d => d.year.toString() === year.toString());
       setFilteredData(filtered);
     } else {

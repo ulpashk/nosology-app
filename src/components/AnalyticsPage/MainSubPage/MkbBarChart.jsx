@@ -45,7 +45,7 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function MKBBarChart({ year, month }) { // Accept props
+export default function MKBBarChart({ year, month }) {
   const [mkbData, setMkbData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -71,13 +71,13 @@ export default function MKBBarChart({ year, month }) { // Accept props
         setMkbData(top10)
       } catch (error) {
         console.error("Failed to fetch MKB stats", error);
-        setMkbData([]); // Ensure data is empty on error
+        setMkbData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
     fetchMKB()
-  }, [year, month]) // Add deps
+  }, [year, month])
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -87,12 +87,10 @@ export default function MKBBarChart({ year, month }) { // Accept props
 
       <div className="flex-1 p-3 min-h-0">
         {isLoading ? (
-          // Optional: Simple Loading State
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
         ) : mkbData.length === 0 ? (
-          // NO DATA STATE
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"

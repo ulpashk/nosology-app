@@ -28,9 +28,8 @@ export default function GenderDonutChart({ year, month }) {
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); // Start loading
-      
-      // Build Query String
+      setIsLoading(true);
+
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -42,15 +41,14 @@ export default function GenderDonutChart({ year, month }) {
         );
         const json = await response.json();
 
-        // API returns { count, next, previous, results: [...] }
         const results = json || [];
 
         setData(results);
       } catch (err) {
-        console.error("Failed to fetch MO stats:", err);
-        setData([]); // Ensure data is empty on error
+        console.error("Failed to fetch gender stats:", err);
+        setData([]);
       } finally {
-        setIsLoading(false); // Stop loading regardless of success/fail
+        setIsLoading(false);
       }
     }
 
@@ -83,12 +81,10 @@ export default function GenderDonutChart({ year, month }) {
 
         <div className="flex-1 min-h-0">
           {isLoading ? (
-            // Optional: Simple Loading State
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
               Загрузка...
             </div>
           ) : data.length === 0 ? (
-            // NO DATA STATE
             <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
               <svg
                 className="w-10 h-10 mb-2 text-gray-300"
