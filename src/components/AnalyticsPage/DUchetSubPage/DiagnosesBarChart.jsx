@@ -46,7 +46,7 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function DiagnosesBarChart() {
+export default function DiagnosesBarChart({ year, month }) {
   const [data, setData] = useState([])
 
   // useEffect(() => {

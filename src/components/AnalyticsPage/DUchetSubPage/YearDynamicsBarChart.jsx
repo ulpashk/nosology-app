@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export default function YearDynamicsBarChart() {
+export default function YearDynamicsBarChart({ year, month }) {
   const [data, setData] = useState([]);
 
   // useEffect(() => {

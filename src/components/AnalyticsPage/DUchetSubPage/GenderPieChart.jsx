@@ -8,25 +8,12 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
   Legend,
   LabelList,
 } from "recharts";
 
-export default function PopulationPyramid() {
+export default function PopulationPyramid({ year, month }) {
   const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   fetch(
-  //     "https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_population_pyramid/"
-  //   )
-  //     .then((res) => res.json())
-  //     .then((json) => setData(json))
-  //     .catch((err) =>
-  //       console.error("Error fetching population pyramid stats:", err)
-  //     );
-  // }, []);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -43,9 +30,7 @@ export default function PopulationPyramid() {
           `https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_population_pyramid/${queryString}`
         );
         const json = await response.json();
-
         const results = json || [];
-
         setData(results);
       } catch (err) {
         console.error("Error fetching population pyramid stats:", err);
@@ -58,6 +43,10 @@ export default function PopulationPyramid() {
     fetchData();
   }, [year, month]);
 
+  const isAllZeros = data.every((item) => item.male === 0 && item.female === 0);
+
+  const showNoData = data.length === 0 || isAllZeros;
+
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100">
@@ -68,12 +57,10 @@ export default function PopulationPyramid() {
 
       <div className="flex-1 p-3 min-h-0">
         {isLoading ? (
-          // Optional: Simple Loading State
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
-        ) : data.length === 0 ? (
-          // NO DATA STATE
+        ) : showNoData ? ( 
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"
@@ -101,8 +88,6 @@ export default function PopulationPyramid() {
               barCategoryGap="20%"
               barGap={8}
             >
-
-              {/* Left side (negative male values) */}
               <XAxis
                 type="number"
                 tickFormatter={(v) => Math.abs(v)}
@@ -128,7 +113,6 @@ export default function PopulationPyramid() {
 
               <Legend wrapperStyle={{ fontSize: "12px" }} />
 
-              {/* MALE (Left, blue) */}
               <Bar
                 dataKey="male_negative"
                 name="Мужчины"
@@ -145,7 +129,6 @@ export default function PopulationPyramid() {
                 />
               </Bar>
 
-              {/* FEMALE (Right, pink) */}
               <Bar
                 dataKey="female"
                 name="Женщины"

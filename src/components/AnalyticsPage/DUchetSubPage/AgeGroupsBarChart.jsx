@@ -7,32 +7,13 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
   Cell,
   LabelList,
 } from "recharts";
 import { useState, useEffect } from "react";
 
-export default function AgeGroupsBarChart() {
+export default function AgeGroupsBarChart({ year, month }) {
   const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await fetch(
-  //         "https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_age_groups/"
-  //       );
-  //       const json = await response.json();
-
-  //       setData(json || []);
-  //     } catch (err) {
-  //       console.error("Failed to fetch age group stats:", err);
-  //     }
-  //   }
-
-  //   fetchData();
-  // }, []);
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -49,9 +30,7 @@ export default function AgeGroupsBarChart() {
           `https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_age_groups/${queryString}`
         );
         const json = await response.json();
-
         const results = json || [];
-
         setData(results);
       } catch (err) {
         console.error("Failed to fetch age group stats:", err);
@@ -63,6 +42,11 @@ export default function AgeGroupsBarChart() {
 
     fetchData();
   }, [year, month]);
+
+
+  const isAllZeros = data.every((item) => item.count === 0);
+
+  const showNoData = data.length === 0 || isAllZeros;
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -77,8 +61,7 @@ export default function AgeGroupsBarChart() {
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
             Загрузка...
           </div>
-        ) : data.length === 0 ? (
-          // NO DATA STATE
+        ) : showNoData ? ( 
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
             <svg
               className="w-10 h-10 mb-2 text-gray-300"
@@ -103,8 +86,6 @@ export default function AgeGroupsBarChart() {
               layout="horizontal"
               margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
             >
-              {/* <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" /> */}
-
               <XAxis 
                 dataKey="age_group" 
                 tick={{ fontSize: 10 }} 
