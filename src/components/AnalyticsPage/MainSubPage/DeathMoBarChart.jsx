@@ -54,7 +54,7 @@ const CustomYAxisTick = ({ x, y, payload }) => {
 
 export default function DeathMoBarChart({ year, month }) {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
