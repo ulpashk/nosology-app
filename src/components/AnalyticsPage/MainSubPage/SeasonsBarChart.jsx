@@ -48,6 +48,47 @@ export default function SeasonsBarChart({ year, month }) {
     setShowInfo(!showInfo);
   }
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
+
+    const {
+      label,
+      average_value,
+      mkb_groups = [],
+      top_3_age = [],
+    } = payload[0].payload;
+
+    return (
+      <div className="text-left bg-white border border-gray-300 rounded-lg p-2 text-xs text-gray-700 shadow-md max-w-xs">
+        <p className="font-semibold mb-1">{label}</p>
+        <p className="mb-2">Среднее значение: {average_value}</p>
+
+        {mkb_groups.length > 0 && (
+          <div className="mb-2">
+            <p className="font-medium">МКБ-группы:</p>
+            {mkb_groups.map((item, idx) => (
+              <p key={idx}>
+                • «{item.name}» — {item.count}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {top_3_age.length > 0 && (
+          <div>
+            <p className="font-medium">Топ-возраст:</p>
+            {top_3_age.map((item, idx) => (
+              <p key={idx}>
+                • {item.age} лет — {item.count}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
@@ -113,14 +154,15 @@ export default function SeasonsBarChart({ year, month }) {
                   tick={{ fontSize: 10 }} 
                 />
 
-                <Tooltip
+                {/* <Tooltip
                   contentStyle={{
                     backgroundColor: "white",
                     border: "1px solid #c1d3ff",
                     borderRadius: "8px",
                     fontSize: "12px",
                   }}
-                />
+                /> */}
+                <Tooltip content={<CustomTooltip />} position={{ y: 80 }}/>
 
                 <Bar dataKey="average_value" radius={[6, 6, 0, 0]}>
                   {data.map((entry, index) => (

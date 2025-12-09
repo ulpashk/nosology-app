@@ -102,7 +102,7 @@ export default function PatientsBarChart({ year, month }) {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-1/3">
             Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
             Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
           </div>
