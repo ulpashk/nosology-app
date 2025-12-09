@@ -84,108 +84,127 @@ export default function MaternalDeathByYearLineGraph() {
     }
   }, [mode, selectedYear, stats])
 
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleClick = () => {
+    setShowInfo(!showInfo);
+  }
+
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Материнская и Детская смертность — Годы и Месяцы
         </h3>
+        <button 
+          className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
+          onClick={()=> handleClick()}
+        >
+          i
+        </button>
       </div>
 
-      {/* MODE BUTTONS */}
-      <div className="p-3 border-b border-gray-50">
-        <div className="flex flex-wrap gap-2 mb-3">
-          <button
-            className={`px-2 py-1 text-xs rounded-lg ${
-              mode === "year"
-                ? "bg-[#3772ff] text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setMode("year")}
-          >
-            По годам
-          </button>
+      <div className="flex-1 min-h-0 relative flex flex-col">
+        {showInfo && 
+          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
+            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+          </div>
+        }
+        <div className="p-3 border-b border-gray-50">
+          <div className="flex flex-wrap gap-2 mb-3">
+            <button
+              className={`px-2 py-1 text-xs rounded-lg ${
+                mode === "year"
+                  ? "bg-[#3772ff] text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+              onClick={() => setMode("year")}
+            >
+              По годам
+            </button>
 
-          <button
-            className={`px-2 py-1 text-xs rounded-lg ${
-              mode === "year-month"
-                ? "bg-[#3772ff] text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            onClick={() => setMode("year-month")}
-          >
-            По месяцам
-          </button>
+            <button
+              className={`px-2 py-1 text-xs rounded-lg ${
+                mode === "year-month"
+                  ? "bg-[#3772ff] text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+              onClick={() => setMode("year-month")}
+            >
+              По месяцам
+            </button>
+          </div>
+
+          {mode === "year-month" && (
+            <select
+              value={selectedYear || ""}
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg"
+            >
+              {stats.map((y) => (
+                <option key={y.year} value={y.year}>
+                  {y.year}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
-        {mode === "year-month" && (
-          <select
-            value={selectedYear || ""}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg"
-          >
-            {stats.map((y) => (
-              <option key={y.year} value={y.year}>
-                {y.year}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+        {/* CHART */}
+        <div className="flex-1 p-3 min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              <CartesianGrid stroke="#f0f0f0" />
+              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} />
 
-      {/* CHART */}
-      <div className="flex-1 p-3 min-h-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <CartesianGrid stroke="#f0f0f0" />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "white",
+                  border: "1px solid #c1d3ff",
+                  borderRadius: "8px",
+                }}
+              />
 
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #c1d3ff",
-                borderRadius: "8px",
-              }}
-            />
-
-            {/* Maternal line */}
-            <Line
-              type="monotone"
-              dataKey="maternal"
-              name="Материнская"
-              stroke="#ff4d4f"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-            >
-              <LabelList
+              {/* Maternal line */}
+              <Line
+                type="monotone"
                 dataKey="maternal"
-                position="top"
-                offset={6}
-                fontSize={10}
-                fontWeight={600}
-              />
-            </Line>
+                name="Материнская"
+                stroke="#ff4d4f"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              >
+                <LabelList
+                  dataKey="maternal"
+                  position="top"
+                  offset={6}
+                  fontSize={10}
+                  fontWeight={600}
+                />
+              </Line>
 
-            {/* Child line */}
-            <Line
-              type="monotone"
-              dataKey="child"
-              name="Детская"
-              stroke="#3772ff"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-            >
-              <LabelList
+              {/* Child line */}
+              <Line
+                type="monotone"
                 dataKey="child"
-                position="top"
-                offset={6}
-                fontSize={10}
-                fontWeight={600}
-              />
-            </Line>
-          </LineChart>
-        </ResponsiveContainer>
+                name="Детская"
+                stroke="#3772ff"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              >
+                <LabelList
+                  dataKey="child"
+                  position="top"
+                  offset={6}
+                  fontSize={10}
+                  fontWeight={600}
+                />
+              </Line>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   )

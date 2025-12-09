@@ -14,7 +14,6 @@ export default function MainSubPage({ selectedYear, selectedMonth }) {
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
                 <div className="min-h-0">
-                    {/* NO props passed here, as requested */}
                     <DeathByYearLineGraph />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

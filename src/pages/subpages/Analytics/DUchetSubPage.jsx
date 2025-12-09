@@ -1,8 +1,7 @@
 "use client";
-import Indicators from "../../../components/AnalyticsPage/DUchetSubPage/Indicators"
 import AgeGroupsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/AgeGroupsBarChart"
 import GenderPieChart from "../../../components/AnalyticsPage/DUchetSubPage/GenderPieChart"
-import DiagnosesBarChart from "../../../components/AnalyticsPage/DUchetSubPage/DiagnosesBarChart"
+import PatientsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/PatientsBarChart"
 import ForecastLineGraph from "../../../components/AnalyticsPage/DUchetSubPage/ForecastLineGraph"
 import YearDynamicsBarChart from "../../../components/AnalyticsPage/DUchetSubPage/YearDynamicsBarChart"
 
@@ -17,7 +16,7 @@ export default function DUchetSubPage({ selectedYear, selectedMonth }){
                     />
                 </div>
                 <div className="min-h-0">
-                    <DiagnosesBarChart
+                    <PatientsBarChart
                         year={selectedYear} 
                         month={selectedMonth}
                     />

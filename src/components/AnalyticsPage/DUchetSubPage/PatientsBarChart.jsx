@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LabelList, ResponsiveContainer, Cell } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LabelList } from "recharts"
 import { useState, useEffect } from "react"
 
 // ---- WRAP HELPER ----
@@ -19,6 +19,7 @@ function wrapText(text, maxCharsPerLine = 25) {
   });
 
   if (currentLine) lines.push(currentLine.trim());
+
   return lines;
 }
 
@@ -45,14 +46,15 @@ const CustomYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-export default function MKBBarChart({ year, month }) {
-  const [mkbData, setMkbData] = useState([]);
+export default function PatientsBarChart({ year, month }) {
+  const [data, setData] = useState([])
+
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => { 
-    async function fetchMKB() {
+  useEffect(() => {
+    async function fetchData() {
       setIsLoading(true);
-      // Build Query String
+
       const params = new URLSearchParams();
       if (year) params.append("year", year);
       if (month) params.append("month", month);
@@ -60,24 +62,25 @@ export default function MKBBarChart({ year, month }) {
 
       try {
         const response = await fetch(
-          `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_mkb_group/${queryString}`
-        )
-        const data = await response.json()
+          `https://admin.smartalmaty.kz/api/v1/healthcare/df-registry/stats_top_mo/${queryString}`
+        );
+        const json = await response.json();
 
-        const top10 = [...data]
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 10)
+        const results = json || [];
 
-        setMkbData(top10)
-      } catch (error) {
-        console.error("Failed to fetch MKB stats", error);
-        setMkbData([]);
+        const top10 = results.slice(0, 10);
+
+        setData(top10);
+      } catch (err) {
+        console.error("Failed to fetch cause stats:", err);
+        setData([]);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchMKB()
-  }, [year, month])
+
+    fetchData();
+  }, [year, month]);
 
   const [showInfo, setShowInfo] = useState(false);
 
@@ -88,7 +91,7 @@ export default function MKBBarChart({ year, month }) {
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
       <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">Топ-10 МКБ группы</h3>
+        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">ТОП-15 МО по числу пациентов</h3>
         <button 
           className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
           onClick={()=> handleClick()}
@@ -96,13 +99,12 @@ export default function MKBBarChart({ year, month }) {
           i
         </button>
       </div>
-      
+
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
           <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-            <p>Сердечно-сосудистые, неврологические заболевания и онкология характерны как для Алматы, так и для большинства стран. </p>
-            <p>Их высокий уровень связан с образом жизни, старением населения и хроническими рисками, которые делают эти болезни наиболее распространёнными и длительно протекающими.</p>
-            <p>Экология и близость гор также оказывают влияние, составляя примерно 10–15% от общего вклада факторов.</p>
+            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
+            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
           </div>
         }
         <div className="flex-1 p-3 min-h-0">
@@ -110,7 +112,7 @@ export default function MKBBarChart({ year, month }) {
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
               Загрузка...
             </div>
-          ) : mkbData.length === 0 ? (
+          ) : data.length === 0 ? (
             <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
               <svg
                 className="w-10 h-10 mb-2 text-gray-300"
@@ -130,8 +132,7 @@ export default function MKBBarChart({ year, month }) {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart layout="vertical" data={mkbData} margin={{ top: 5, right: 10, left: 60, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <BarChart data={data} layout="vertical" margin={{ top: 5, right: 10, left: 60, bottom: 5 }}>
                 <XAxis type="number" tick={{ fontSize: 10 }} />
                 <YAxis dataKey="name" type="category" width={75} tick={<CustomYAxisTick />} />
                 <Tooltip
@@ -143,13 +144,13 @@ export default function MKBBarChart({ year, month }) {
                   }}
                 />
                 <Bar dataKey="count" radius={[0, 6, 6, 0]}>
-                  {mkbData.map((entry, index) => (
-                    <Cell key={index} fill="url(#mkbBlueGradient)" />
+                  {data.map((entry, index) => (
+                    <Cell key={index} fill="url(#deathCauseGradient)" />
                   ))}
                   <LabelList dataKey="count" position="right" fontSize={10} fontWeight="700" />
                 </Bar>
                 <defs>
-                  <linearGradient id="mkbBlueGradient" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="deathCauseGradient" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor="#3772ff" />
                     <stop offset="100%" stopColor="#2956bf" />
                   </linearGradient>

@@ -50,82 +50,100 @@ export default function GenderDonutChart({ year, month }) {
     return `${(percent * 100).toFixed(0)}%`;
   };
 
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleClick = () => {
+    setShowInfo(!showInfo);
+  }
+
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
-      {/* HEADER SECTION: Made adaptive using flex-wrap */}
       <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Распределение по полу
         </h3>
+        <button 
+          className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
+          onClick={()=> handleClick()}
+        >
+          i
+        </button>
       </div>
 
-        <div className="flex-1 p-3 min-h-0 relative flex flex-col">
-          {female && male && (
-            <div className="absolute top-3 right-3 bg-gray-50 rounded-lg p-2 text-xs shadow-sm border border-gray-200 z-10">
-              <p className="font-semibold text-gray-700">Средний возраст:</p>
-              <p className="text-gray-600">Женский: {female.avg_age}</p>
-              <p className="text-gray-600">Мужской: {male.avg_age}</p>
-            </div>
-          )}
-
-      {/* CHART SECTION */}
-      <div className="flex-1 p-3 min-h-0 w-full">
-        {isLoading ? (
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-            Загрузка...
+      <div className="flex-1 p-3 min-h-0 relative flex flex-col">
+        {female && male && (
+          <div className="absolute top-3 right-3 bg-gray-50 rounded-lg p-2 text-xs shadow-sm border border-gray-200 z-10">
+            <p className="font-semibold text-gray-700">Средний возраст:</p>
+            <p className="text-gray-600">Женский: {female.avg_age}</p>
+            <p className="text-gray-600">Мужской: {male.avg_age}</p>
           </div>
-        ) : data.length === 0 ? (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-            <svg
-              className="w-10 h-10 mb-2 text-gray-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <p className="text-sm font-medium">Нет данных</p>
-            <p className="text-xs text-gray-400">за выбранный период</p>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "white",
-                  border: "1px solid #c1d3ff",
-                  borderRadius: "8px",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: "12px" }} />
-              <Pie
-                data={data}
-                dataKey="count"
-                nameKey="gender"
-                cx="50%"
-                cy="50%"
-                // CHANGED: Fixed pixels -> Percentages for adaptiveness
-                innerRadius="45%"
-                outerRadius="75%" 
-                paddingAngle={2}
-                startAngle={40}
-                endAngle={450}
-                labelLine={true}
-                label={renderCustomizedLabel}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
         )}
-      </div>
+
+        {showInfo && 
+          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+            Женщины имеют более высокий средний возраст (70 лет).
+            При этом мужчины умирают чаще: их доля смертности выше на 6%.
+            Это свидетельствует о более ранней и частой смертности среди мужчин, что может быть связано с особенностями образа жизни, уровнем здоровья и поведенческими факторами.
+          </div>
+        }
+        {/* CHART SECTION */}
+        <div className="flex-1 p-3 min-h-0 w-full">
+          {isLoading ? (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+              Загрузка...
+            </div>
+          ) : data.length === 0 ? (
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+              <svg
+                className="w-10 h-10 mb-2 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p className="text-sm font-medium">Нет данных</p>
+              <p className="text-xs text-gray-400">за выбранный период</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #c1d3ff",
+                    borderRadius: "8px",
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
+                <Pie
+                  data={data}
+                  dataKey="count"
+                  nameKey="gender"
+                  cx="50%"
+                  cy="50%"
+                  // CHANGED: Fixed pixels -> Percentages for adaptiveness
+                  innerRadius="45%"
+                  outerRadius="75%" 
+                  paddingAngle={2}
+                  startAngle={40}
+                  endAngle={450}
+                  labelLine={true}
+                  label={renderCustomizedLabel}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
     </div>
   );

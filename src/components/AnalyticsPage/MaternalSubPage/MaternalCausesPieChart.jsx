@@ -96,70 +96,89 @@ export default function MaternalCausesPieChart({ year, month }) {
     return `${(percent * 100).toFixed(0)}%`;
   };
 
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleClick = () => {
+    setShowInfo(!showInfo);
+  }
+
   return (
     // Main container fills height, flex column manages header vs chart area
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
-      <div className="p-4 border-b border-gray-100 flex-shrink-0">
+      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
         <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Причины материнской смертности
         </h3>
+        <button 
+          className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
+          onClick={()=> handleClick()}
+        >
+          i
+        </button>
       </div>
 
-      {/* flex-1 min-h-0 is crucial for Recharts to know the available space */}
-      <div className="flex-1 p-3 min-h-0 w-full">
-        {isLoading ? (
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-            Загрузка...
+      <div className="flex-1 min-h-0 relative flex flex-col">
+        {showInfo && 
+          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
+            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
           </div>
-        ) : data.length === 0 ? (
-          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-            <svg
-              className="w-10 h-10 mb-2 text-gray-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <p className="text-sm font-medium">Нет данных</p>
-            <p className="text-xs text-gray-400">за выбранный период</p>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Tooltip content={<CustomTooltip />} />
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="mkb_code"
-                cx="50%"
-                cy="50%"
-                // CHANGED: Fixed pixel value (90) replaced with percentage
-                // "75%" allows space for the labels to render without clipping
-                outerRadius="75%" 
-                paddingAngle={3}
-                startAngle={40}
-                endAngle={400}
-                labelLine={true}
-                label={renderCustomizedLabel}
-                // Optional: animation helps visual smoothness on resize
-                isAnimationActive={true} 
+        }
+        <div className="flex-1 p-3 min-h-0 w-full">
+          {isLoading ? (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+              Загрузка...
+            </div>
+          ) : data.length === 0 ? (
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+              <svg
+                className="w-10 h-10 mb-2 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p className="text-sm font-medium">Нет данных</p>
+              <p className="text-xs text-gray-400">за выбранный период</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip content={<CustomTooltip />} />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="mkb_code"
+                  cx="50%"
+                  cy="50%"
+                  // CHANGED: Fixed pixel value (90) replaced with percentage
+                  // "75%" allows space for the labels to render without clipping
+                  outerRadius="75%" 
+                  paddingAngle={3}
+                  startAngle={40}
+                  endAngle={400}
+                  labelLine={true}
+                  label={renderCustomizedLabel}
+                  // Optional: animation helps visual smoothness on resize
+                  isAnimationActive={true} 
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
     </div>
   )

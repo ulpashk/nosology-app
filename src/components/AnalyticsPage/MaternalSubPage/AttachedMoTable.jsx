@@ -33,17 +33,33 @@ export default function AttachedMoTable({ year, month }){
         fetchData();
     }, [year, month]);
 
+    const [showInfo, setShowInfo] = useState(false);
+
+    const handleClick = () => {
+        setShowInfo(!showInfo);
+    }
+
     return (
-        // Flex column with h-full ensures the outer card fills the grid cell
         <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex-shrink-0">
-                <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
+            <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
+                <h3 className="text-sm font-bold text-[#1b1b1b] text-left uppercase tracking-wide">
                     Материнская смерть по прикрепленному МО
                 </h3>
+                <button 
+                    className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
+                    onClick={()=> handleClick()}
+                >
+                    i
+                </button>
             </div>
             
-            {/* flex-1 min-h-0 allows this container to shrink/grow to fill remaining space */}
             <div className="flex-1 min-h-0 relative">
+                {showInfo && 
+                    <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+                        Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
+                        Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+                    </div>
+                }
                 {isLoading ? (
                     <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                         Загрузка...
