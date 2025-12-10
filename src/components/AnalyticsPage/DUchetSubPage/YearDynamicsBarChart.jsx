@@ -7,7 +7,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
+  // CartesianGrid,
   Cell,
   LabelList,
   Line,
@@ -54,6 +54,20 @@ export default function YearDynamicsBarChart({ year, month }) {
   const handleClick = () => {
     setShowInfo(!showInfo);
   }
+  
+  // Helper function to format any index/percentage value as X.X%
+  const formatPercentage = (value) => {
+    if (value === null || value === undefined) return '';
+    // Use Math.abs and a custom sign logic for growth_percentage if needed, 
+    // but the provided data has the sign, so simple toFixed(1) is fine.
+    return `${value.toFixed(1)}%`;
+  };
+
+  // Custom component to format the count value (adds a thousands separator)
+  const formatCount = (value) => {
+    if (value === null || value === undefined) return '';
+    return value.toLocaleString('ru-RU');
+  };
 
   return (
     <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
@@ -72,8 +86,10 @@ export default function YearDynamicsBarChart({ year, month }) {
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
           <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
-            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+            Диаграмма показывает устойчивый рост числа пациентов с 2021 по 2024 год,
+            когда достигается максимальное значение. Индекс динамики также отражает восходящий тренд, 
+            что может быть связано с улучшением выявляемости заболеваний, 
+            расширением диспансерного наблюдения и ростом обращаемости населения. 
           </div>
         }
 
@@ -139,28 +155,45 @@ export default function YearDynamicsBarChart({ year, month }) {
                     borderRadius: "8px",
                     fontSize: "12px",
                   }}
+                  formatter={(value, name, props) => {
+                    if (name === 'count') return [formatCount(value), 'Число пациентов'];
+                    if (name === 'index_2021') return [value, 'Индекс к 2021г.'];
+                    return [value, name];
+                  }}
                 />
 
-                {/* Bars */}
                 <Bar dataKey="count" yAxisId="left" radius={[6, 6, 0, 0]}>
                   {data.map((_, i) => (
                     <Cell key={i} fill="url(#yearGradient)" />
                   ))}
 
-                  <LabelList dataKey="count" position="top" fontSize={10} offset={24}/>
+                  <LabelList 
+                    dataKey="count" 
+                    position="insideTop" 
+                    fontSize={10} 
+                    fill="#ffffff"      
+                    offset={5}          
+                    formatter={formatCount} 
+                  />
                 </Bar>
 
-                {/* Line on top */}
                 <Line
                   type="monotone"
                   dataKey="index_2021"
-                  // dataKey="growth_percentage"
                   yAxisId="right"
                   stroke="#f81a1aff"
-                  // stroke="#ff7300"
                   strokeWidth={3}
                   dot={{ r: 4 }}
-                />
+                >
+                  <LabelList
+                    dataKey="growth_percentage"
+                    position="top"
+                    formatter={formatPercentage}
+                    fontSize={10}
+                    fill="#f81a1aff"
+                    offset={10}
+                  />
+                </Line>
 
                 <defs>
                   <linearGradient id="yearGradient" x1="0" y1="0" x2="0" y2="1">

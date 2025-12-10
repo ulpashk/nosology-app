@@ -74,9 +74,12 @@ export default function ForecastLineGraph() {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-1/3">
-            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
-            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+            Прогноз построен с помощью модели Gradient Boosting, обученной на 47 признаках. 
+            В модели использованы данные по смертности и диспансерному учёту, что позволило 
+            учесть как динамику заболеваемости, так и сезонные колебания. 
+            Качество прогноза составляет: R² = 0.73, MAE = 30.24 и RMSE = 40.41 — показатели, 
+            характеризующие стабильную точность модели при работе с временными рядами.
           </div>
         }
         <div className="flex-1 p-3 min-h-0">
