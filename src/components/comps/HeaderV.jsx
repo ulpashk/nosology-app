@@ -110,7 +110,7 @@ export default function Header() {
               }}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#283353] hover:bg-[#ebf1ff] border border-transparent hover:border-[#c1d3ff] transition-colors w-full text-left"
             >
-              <span>`Методология</span>
+              <span>Методология</span>
             </button>
           </div>
         </div>
