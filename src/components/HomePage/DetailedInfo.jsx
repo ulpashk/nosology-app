@@ -1,7 +1,5 @@
 "use client";
 
-import { MapPin } from "lucide-react";
-
 export default function DetailedInfo({buildingData}){
   const formatAvgPerson = (value) => {
     if (value == null) return "—";

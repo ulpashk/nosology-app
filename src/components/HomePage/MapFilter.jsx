@@ -7,8 +7,6 @@ export default function MapFilter({
   setDistrictDropdownOpen,
   districtDropdownOpen,
   selectedDistrict,
-  enginNodes,
-  setEnginNodes,
   buildingData,
   generalStats,
   selectedYear,
@@ -16,12 +14,6 @@ export default function MapFilter({
 }) {
   const [filtersHidden, setFiltersHidden] = useState(false);
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
-  
-  const [openSections, setOpenSections] = useState({
-    risk: true,
-    social: true,
-    building: true,
-  });
 
   const allDistricts = [
     "Все районы",

@@ -19,12 +19,7 @@ export default function MapView({
   setBuildingData,
   setShowDetailCard,
   selectedDistrict,
-  // 1. Receive selectedYear prop
-  selectedYear, 
-  setTotalCount,
-  setTotalPopulation,
-  setAvgVisit,
-  setAvgPerson,
+  selectedYear,
   setGeneralStats,
 }) {
   const mapContainer = useRef(null);
@@ -37,25 +32,16 @@ export default function MapView({
 
   const isLoading = mapLoading || dataLoading;
 
-  // Fetch and render data when district OR year changes
   useEffect(() => {
     if (!mapRef.current) return;
 
     const fetchAndRender = async () => {
-      // Reset selection when changing filters
       selectedMarkerRef.current = null;
-      // Optional: Close detail card when filter changes
       setShowDetailCard(false); 
 
       try {
-        // 2. Pass selectedYear to the fetch function
         const data = await fetchHealthcareData(selectedDistrict, selectedYear);
 
-        // Update stats
-        setTotalCount(data.stats.totalCount);
-        setTotalPopulation(data.stats.totalPopulation);
-        setAvgVisit(data.stats.avgVisit);
-        setAvgPerson(data.stats.avgPerson);
         setGeneralStats(data.statsgeneral);
 
         const addOrUpdateLayers = () => {
@@ -69,7 +55,6 @@ export default function MapView({
           setupPolygonLayers(map, data.polygons);
           setupPointLayers(map, data.points);
 
-          // Click handler
           const handlePointClick = (e) => {
             const feature = e.features?.[0];
             if (!feature) return;
@@ -134,8 +119,7 @@ export default function MapView({
 
     fetchAndRender();
     
-    // 3. Add selectedYear to dependency array so it refetches when year changes
-  }, [selectedDistrict, selectedYear, fetchHealthcareData, setBuildingData, setShowDetailCard, setTotalCount, setTotalPopulation, setAvgVisit, setAvgPerson, setGeneralStats, mapRef]);
+  }, [selectedDistrict, selectedYear, fetchHealthcareData, setBuildingData, setShowDetailCard, setGeneralStats, mapRef]);
 
 
   useEffect(() => {

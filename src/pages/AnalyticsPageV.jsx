@@ -8,11 +8,9 @@ import DUchetSubPage from "./subpages/Analytics/DUchetSubPage"
 export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState("main")
 
-  // Filter Data
   const [selectedYear, setSelectedYear] = useState("")
   const [selectedMonth, setSelectedMonth] = useState("")
 
-  // Dropdown Visibility States
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
   const [monthDropdownOpen, setMonthDropdownOpen] = useState(false)
 
@@ -40,10 +38,7 @@ export default function AnalyticsPage() {
     { value: "12", label: "Декабрь" },
   ]
 
-  // Handlers
   const handleYearChange = (year) => {
-    // If clicking the currently selected year, unselect it (optional toggle logic)
-    // Or just set it. Here we allow setting to null for "All"
     setSelectedYear(year === null ? "" : year)
     setYearDropdownOpen(false)
   }
@@ -53,18 +48,20 @@ export default function AnalyticsPage() {
     setMonthDropdownOpen(false)
   }
 
-  // Helper to get display label for month
   const getMonthLabel = (val) => {
     const m = months.find((item) => item.value === val)
     return m ? m.label : "Все месяцы"
   }
 
+  const clearFilters = () => {
+    setSelectedYear("");
+    setSelectedMonth("");
+  };
+
   return (
     <div className="w-full h-screen bg-gradient-to-br from-[#f5f6fa] to-[#eaebee] flex flex-col">
-      {/* Header with Tabs and Filters */}
       <div className="px-4 sm:px-6 pt-2 flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center relative z-20">
         
-        {/* Tabs */}
         <div className="flex gap-3">
           <button className={tabClasses("main")} onClick={() => setActiveTab("main")}>
             Главная
@@ -77,15 +74,21 @@ export default function AnalyticsPage() {
           </button>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-2">
-          
-          {/* --- YEAR DROPDOWN --- */}
+          {(selectedYear !== "" || selectedMonth !== "") && (
+            <button 
+              onClick={clearFilters}
+              className="text-xs text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+            >
+                ✕ Сбросить фильтры
+            </button>
+          )}
+
           <div className="relative w-32">
             <div
               onClick={() => {
                 setYearDropdownOpen(!yearDropdownOpen)
-                setMonthDropdownOpen(false) // Close other dropdown
+                setMonthDropdownOpen(false)
               }}
               className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
             >
@@ -107,7 +110,6 @@ export default function AnalyticsPage() {
             {yearDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
                 <div className="p-2 space-y-1 text-xs">
-                  {/* Option: All Years */}
                   <div
                     onClick={() => handleYearChange(null)}
                     className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
@@ -124,7 +126,6 @@ export default function AnalyticsPage() {
 
                   <div className="border-b my-1"></div>
 
-                  {/* Existing Years */}
                   {years.map((year) => (
                     <div
                       key={year}
@@ -146,12 +147,11 @@ export default function AnalyticsPage() {
             )}
           </div>
 
-          {/* --- MONTH DROPDOWN --- */}
           <div className="relative w-36">
             <div
               onClick={() => {
                 setMonthDropdownOpen(!monthDropdownOpen)
-                setYearDropdownOpen(false) // Close other dropdown
+                setYearDropdownOpen(false)
               }}
               className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
             >
@@ -173,7 +173,6 @@ export default function AnalyticsPage() {
             {monthDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
                 <div className="p-2 space-y-1 text-xs">
-                  {/* Option: All Months */}
                   <div
                     onClick={() => handleMonthChange(null)}
                     className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
@@ -190,7 +189,6 @@ export default function AnalyticsPage() {
 
                   <div className="border-b my-1"></div>
 
-                  {/* Existing Months */}
                   {months.map((m) => (
                     <div
                       key={m.value}
