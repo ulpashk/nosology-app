@@ -67,9 +67,9 @@ export default function MapFilter({
 
   return (
     <>
-      <div className="flex flex-col max-h-[80vh] bg-white/95 backdrop-blur-sm rounded-xl border shadow-lg overflow-hidden">
+      <div className="flex flex-col max-h-[80vh] bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl border shadow-md md:shadow-lg overflow-hidden text-xs md:text-sm">
         <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b">
-          <div className="flex items-center justify-between px-4 pt-3 pb-2 font-semibold text-base border-b-0">
+          <div className="flex items-center justify-between px-2 md:px-4 pt-2 md:pt-3 pb-2 font-semibold text-sm md:text-base">
             <span>Фильтры</span>
 
             <button
@@ -79,7 +79,7 @@ export default function MapFilter({
             >
               <svg
                 className={`w-4 h-4 transform transition-transform duration-300 ${
-                  filtersHidden ? "rotate-180" : ""
+                  filtersHidden ? "" : "rotate-180"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -95,12 +95,11 @@ export default function MapFilter({
             </button>
           </div>
 
-          <div className="px-4 pb-3 grid grid-cols-2 gap-2">
-            
+          <div className="px-2 md:px-4 pb-2 md:pb-3 grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="relative">
               <div
                 onClick={() => setDistrictDropdownOpen(!districtDropdownOpen)}
-                className="flex items-center justify-between px-3 py-2 border rounded-md text-sm text-left cursor-pointer hover:bg-gray-50"
+                className="flex items-center justify-between px-2 md:px-3 py-1.5 md:py-2 border rounded-md text-xs md:text-sm"
               >
                 <span className="flex-1 truncate">
                   {selectedDistrict.length > 0
@@ -126,7 +125,7 @@ export default function MapFilter({
 
               {districtDropdownOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-44 overflow-y-auto">
-                  <div className="p-2 space-y-1 text-xs">
+                  <div className="p-1.5 md:p-2 space-y-1 text-xs">
                     {allDistricts.map((district) => (
                       <label
                         key={district}
@@ -149,7 +148,7 @@ export default function MapFilter({
             <div className="relative">
               <div
                 onClick={() => setYearDropdownOpen(!yearDropdownOpen)}
-                className="flex items-center justify-between px-3 py-2 border rounded-md text-sm text-left cursor-pointer hover:bg-gray-50"
+                className="flex items-center justify-between px-2 md:px-3 py-1.5 md:py-2 border rounded-md text-xs md:text-sm"
               >
                 <span className="flex-1 truncate">
                   {selectedYear ? `${selectedYear} год` : "Все годы"}
@@ -173,7 +172,7 @@ export default function MapFilter({
 
               {yearDropdownOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-44 overflow-y-auto">
-                  <div className="p-2 space-y-1 text-xs">
+                  <div className="p-1.5 md:p-2 space-y-1 text-xs">
                     <div
                       onClick={() => handleYearChange(null)}
                       className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
@@ -190,7 +189,6 @@ export default function MapFilter({
 
                     <div className="border-b my-1"></div>
 
-                    {/* Existing Years */}
                     {years.map((year) => (
                       <div
                         key={year}
@@ -214,7 +212,6 @@ export default function MapFilter({
           </div>
         </div>
 
-        {/* 🔹 Скрываемая часть (с анимацией) */}
         <div
           className={`transition-all duration-500 ease-in-out ${
             filtersHidden
@@ -226,7 +223,6 @@ export default function MapFilter({
             generalStats={generalStats}
             selectedDistrict={selectedDistrict}
           />
-
           {buildingData?.id && <DetailedInfo buildingData={buildingData} />}
         </div>
       </div>

@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 
-export default function MapFilterIndicators({ totalCountv, totalPopulationv, avgVisitv, avgPersonv, selectedDistrict, generalStats }) {
+export default function MapFilterIndicators({ selectedDistrict, generalStats }) {
   const [vopData, setVopData] = useState([]);
-
-  const totalCount = totalCountv || 0;
-  const totalPopulation = totalPopulationv || 0;
-  const avgVisit = avgVisitv || 0;
-  const avgPerson = avgPersonv || 0;
  
   const formatPopulation = (value) => {
     if (value == null) return "—";
@@ -19,12 +14,6 @@ export default function MapFilterIndicators({ totalCountv, totalPopulationv, avg
     if (value == null) return "—";
     const rounded = Math.ceil(value * 100) / 100;
     return rounded.toLocaleString("en-US").replace(/,/g, " ");
-  };
-
-  const calcDeficitVop = (data) => {
-    const sum = (data.peds_count * 800) + (data.vop_count * 1700) + (data.therap_count * 2200);
-    const diff = data.total_population - sum;
-    return Math.ceil(diff / 1700);
   };
 
   useEffect(() => {
@@ -44,62 +33,57 @@ export default function MapFilterIndicators({ totalCountv, totalPopulationv, avg
   }, [selectedDistrict]);
 
   return (
-    <div className="space-y-2 text-xs bg-white/95 p-3">
-      
-      {/* Row 1 */}
+    <div className="space-y-2 text-[11px] md:text-xs bg-white/95 p-2 md:p-3">
       <div className="grid grid-cols-2 gap-2">
-        <div className="text-center rounded-lg border bg-white shadow p-2">
-          <div className="font-semibold text-blue-800 text-[16px]">{generalStats.totalCount}</div>
-          <p className="text-xs text-gray-500 mt-2">Всего поликлиник</p>
+        <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+          <div className="font-semibold text-blue-800 text-xs md:text-[16px]">{generalStats.totalCount || "-"}</div>
+          <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">Всего поликлиник</p>
         </div>
 
-        <div className="text-center rounded-lg border bg-white shadow p-2">
-          <div className="font-semibold text-blue-800 text-[16px]">
-            {/* {formatPopulation(totalPopulation)} */}
+        <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+          <div className="font-semibold text-blue-800 text-xs md:text-[16px]">
             {formatPopulation(generalStats.totalPopulation)}
           </div>
-          <p className="text-xs text-gray-500 mt-2">Обслуживаемое население</p>
+          <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">Обслуживаемое население</p>
         </div>
       </div>
 
-      {/* Row 2 */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="text-center rounded-lg border bg-white shadow p-2">
-                <div className="font-semibold text-blue-800 text-[16px]">
+          <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+                <div className="font-semibold text-blue-800 text-xs md:text-[16px]">
                     {formatAvgPerson((generalStats.deathCertificateCount)) || "-"}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">Кол-во смертности</p>
+                <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">Кол-во смертности</p>
             </div>
 
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-                <div className="font-semibold text-blue-800 text-[16px]">
+            <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+                <div className="font-semibold text-blue-800 text-xs md:text-[16px]">
                     {formatAvgPerson((generalStats.deathCertificateAvgYear)) || "-"}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">
                     Кол-во смертности в год
                 </p>
             </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-                <div className="font-semibold text-blue-800 text-[16px]">
+            <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+                <div className="font-semibold text-blue-800 text-xs md:text-[16px]">
                     {formatAvgPerson(generalStats.dfRegistryCount)}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">
                     Кол-во Д-учет 
                 </p>
             </div>
-            <div className="text-center rounded-lg border bg-white shadow p-2">
-                <div className="font-semibold text-blue-800 text-[16px]">
+            <div className="text-center rounded-md md:rounded-lg border bg-white shadow-sm md:shadow p-1.5 md:p-2">
+                <div className="font-semibold text-blue-800 text-xs md:text-[16px]">
                     {formatAvgPerson((generalStats.avgVisit))}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">Ср. посещении на поликлинику</p>
+                <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-2">Ср. посещении на поликлинику</p>
             </div>
         </div>
 
-      {/* Note */}
-      <div className="bg-blue-200/40 p-3 rounded-lg border-l-4 border-blue-500">
-        <div className="text-left text-[10px]">
+      <div className="bg-blue-200/30 p-2 md:p-3 rounded-md md:rounded-lg border-l-2 md:border-l-4 border-blue-500">
+        <div className="text-left text-[9px] md:text-[10px]">
           <b>Примечание:</b> Для просмотра детальной информации по медицинским учреждениям кликните на соответствующую точку на карте.
         </div>
       </div>

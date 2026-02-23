@@ -18,8 +18,8 @@ export const MapLegend = () => {
   ];
 
   return (
-    <div className="absolute bottom-0 right-0 p-3 rounded-lg border bg-white/50 backdrop-blur-md">
-      <div className="font-bold text-[#1b1b1b] mb-2 md:mb-2.5 text-xs md:text-sm">
+    <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4 p-2 md:p-3 rounded-md md:rounded-lg border bg-white/60 md:bg-white/50 backdrop-blur-sm md:backdrop-blur-md shadow-sm md:shadow">
+      <div className="font-semibold text-[11px] md:text-sm text-[#1b1b1b] mb-1.5 md:mb-2.5">
         Легенда по кол-ву смертности
       </div>
       {legendItems.map((item, index) => (
