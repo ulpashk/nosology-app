@@ -69,7 +69,7 @@ export default function MapFilter({
     <>
       <div className="flex flex-col max-h-[80vh] bg-white/95 backdrop-blur-sm rounded-lg md:rounded-xl border shadow-md md:shadow-lg overflow-hidden text-xs md:text-sm">
         <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b">
-          <div className="flex items-center justify-between px-2 md:px-4 pt-2 md:pt-3 pb-2 font-semibold text-sm md:text-base">
+          <div className="flex items-center justify-between px-2 md:px-4 pt-2 md:pt-3 pb-2 font-semibold text-sm sm:text-base md:text-base">
             <span>Фильтры</span>
 
             <button
@@ -108,7 +108,7 @@ export default function MapFilter({
                 </span>
                 <svg
                   className={`w-4 h-4 transition-transform ${
-                    districtDropdownOpen ? "rotate-180" : ""
+                    districtDropdownOpen ? "" : "rotate-180"
                   }`}
                   fill="none"
                   stroke="currentColor"

@@ -7,15 +7,16 @@ import YearDynamicsBarChart from "../../../components/AnalyticsPage/DUchetSubPag
 
 export default function DUchetSubPage({ selectedYear, selectedMonth }){ 
     return (
-        <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[45%] mb-4">
-                <div className="min-h-0">
+        <div className="flex flex-col gap-4 pb-4 lg:pb-0 h-auto lg:h-full">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0 h-auto lg:h-[45%]">
+                <div className="h-80 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
                     <ForecastLineGraph 
                         year={selectedYear} 
                         month={selectedMonth}
                     />
                 </div>
-                <div className="min-h-0">
+                <div className="h-96 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
                     <PatientsBarChart
                         year={selectedYear} 
                         month={selectedMonth}
@@ -23,25 +24,25 @@ export default function DUchetSubPage({ selectedYear, selectedMonth }){
                 </div>
             </div>
     
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 h-[50%]">
-                <div className="min-h-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0 h-auto lg:h-[50%]">
+                <div className="h-80 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
                     <GenderPieChart
                         year={selectedYear} 
                         month={selectedMonth}
                     />
                 </div>
-                <div className="min-h-0">
+                <div className="h-80 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
                     <AgeGroupsBarChart 
                         year={selectedYear} 
                         month={selectedMonth}
                     />
                 </div>
-                <div className="min-h-0 hidden lg:block">
+                <div className="h-80 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
                     <YearDynamicsBarChart 
                         year={selectedYear} 
                         month={selectedMonth}/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

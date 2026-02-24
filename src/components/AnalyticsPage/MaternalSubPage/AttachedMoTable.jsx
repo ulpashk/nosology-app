@@ -35,31 +35,24 @@ export default function AttachedMoTable({ year, month }){
 
     const [showInfo, setShowInfo] = useState(false);
 
-    const handleClick = () => {
-        setShowInfo(!showInfo);
-    }
-
     return (
-        <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
-            <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-                <h3 className="text-sm font-bold text-[#1b1b1b] text-left uppercase tracking-wide">
-                    Материнская смерть по прикрепленному МО
+        <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden relative">
+            <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+                <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] text-left uppercase tracking-wide truncate">
+                    Материнская смерть (Прикрепл.)
                 </h3>
                 <button 
                     className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
-                    onClick={()=> handleClick()}
+                    onClick={()=> setShowInfo(!showInfo)}
                 >
                     i
                 </button>
             </div>
             
-            <div className="flex-1 min-h-0 relative">
+            <div className="flex-1 min-h-0 relative w-full group">
                 {showInfo && 
-                    <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-                        Таблица показывает количество материнских и детских смертей по прикреплённым медицинским организациям. 
-                        В неё включены случаи, классифицированные по МКБ-кодам, 
-                        относящимся к амбулаторным (polyclinic) категориям — в основном состояния беременности без острых осложнений, 
-                        сопутствующие заболевания матери, а также детские случаи, связанные с перинатальными факторами, инфекциями и лёгкими респираторными состояниями.
+                    <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
+                        Таблица по прикреплённым МО.
                     </div>
                 }
                 {isLoading ? (
@@ -68,41 +61,35 @@ export default function AttachedMoTable({ year, month }){
                     </div>
                     ) : data.length === 0 ? (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-                        {/* SVG Icon */}
-                        <svg className="w-10 h-10 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
                         <p className="text-sm font-medium">Нет данных</p>
-                        <p className="text-xs text-gray-400">за выбранный период</p>
                     </div>
                     ) : (
-                    // CHANGED HERE: Removed max-h-*, added h-full. 
-                    // This forces the div to take exactly the available height of the flex parent.
-                    <div className="h-full overflow-y-auto"> 
-                        <table className="min-w-full border border-gray-100 text-sm rounded-lg">
-                            <thead className="bg-gray-50 sticky top-0 z-10">
+                    // FIX: absolute inset-0 ensures table scrolls within the fixed parent height
+                    <div className="absolute inset-0 overflow-auto custom-scrollbar"> 
+                        <table className="min-w-full border border-gray-100 text-xs sm:text-sm rounded-lg">
+                            <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="px-4 py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
+                                    <th className="px-3 py-2 sm:px-4 sm:py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
                                         Название прикрепленного МО
                                     </th>
-                                    <th className="px-4 py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
-                                        Материнская смертность
+                                    <th className="px-3 py-2 sm:px-4 sm:py-3 text-center border-b border-gray-100 font-semibold text-gov-text-primary whitespace-nowrap">
+                                        Материнская
                                     </th>
-                                    <th className="px-4 py-3 text-left border-b border-gray-100 font-semibold text-gov-text-primary">
-                                        Детская смертность
+                                    <th className="px-3 py-2 sm:px-4 sm:py-3 text-center border-b border-gray-100 font-semibold text-gov-text-primary whitespace-nowrap">
+                                        Детская
                                     </th>
                                 </tr>
                             </thead>
                             <tbody> 
                                 {data.map((item, i) => (
                                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-4 py-3 border-b border-gray-50 text-left text-gov-text-primary">
+                                        <td className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-50 text-left text-gov-text-primary">
                                             {item.name}
                                         </td>
-                                        <td className="px-4 py-3 border-b border-gray-50">
+                                        <td className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-50 text-center font-medium">
                                             {item.maternal_count}
                                         </td>
-                                        <td className="px-4 py-3 border-b border-gray-50">
+                                        <td className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-50 text-center font-medium">
                                             {item.child_count}
                                         </td>
                                     </tr>

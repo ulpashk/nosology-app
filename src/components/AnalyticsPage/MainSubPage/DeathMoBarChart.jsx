@@ -89,19 +89,15 @@ export default function DeathMoBarChart({ year, month }) {
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleClick = () => {
-    setShowInfo(!showInfo);
-  }
-
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col relative">
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] uppercase tracking-wide truncate">
           Топ-10 Смертей по МО
         </h3>
         <button 
           className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
-          onClick={()=> handleClick()}
+          onClick={()=> setShowInfo(!showInfo)}
         >
           i
         </button>
@@ -109,19 +105,19 @@ export default function DeathMoBarChart({ year, month }) {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-            Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
-            Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+          <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
+            <p>
+              Данные отражают медицинские организации, в которых зарегистрированы случаи смерти. 
+              Наибольшее количество приходится на крупные многопрофильные больницы, где лечатся пациенты с наиболее тяжёлыми состояниями, тогда как специализированные и частные центры имеют значительно меньшие показатели.
+            </p>
           </div>
         }
-        <div className="flex-1 p-3 min-h-0">
+        <div className="flex-1 p-2 sm:p-3 min-h-0 w-full">
           {isLoading ? (
-            // Optional: Simple Loading State
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
               Загрузка...
             </div>
           ) : data.length === 0 ? (
-            // NO DATA STATE
             <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
               <svg
                 className="w-10 h-10 mb-2 text-gray-300"
@@ -149,11 +145,11 @@ export default function DeathMoBarChart({ year, month }) {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
 
-                <XAxis type="number" tick={{ fontSize: 10 }} />
+                <XAxis type="number" tick={{ fontSize: 9 }} />
                 <YAxis
                   dataKey="name"
                   type="category"
-                  width={75}
+                  width={70}
                   tick={<CustomYAxisTick />}
                 />
 
@@ -174,7 +170,7 @@ export default function DeathMoBarChart({ year, month }) {
                   <LabelList
                     dataKey="count"
                     position="right"
-                    fontSize={10}
+                    fontSize={9}
                     fontWeight="700"
                   />
                 </Bar>

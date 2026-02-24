@@ -44,16 +44,8 @@ export default function MaternalDeathByYearLineGraph() {
       setChartData(
         stats.map((y) => ({
           label: y.year.toString(),
-
-          // Sum for MATERnal
-          maternal:
-            (y.maternal_polyclinic_coeff || 0) +
-            (y.maternal_hospital_coeff || 0),
-
-          // Sum for CHILD
-          child:
-            (y.child_polyclinic_coeff || 0) +
-            (y.child_hospital_coeff || 0),
+          maternal: (y.maternal_polyclinic_coeff || 0) + (y.maternal_hospital_coeff || 0),
+          child: (y.child_polyclinic_coeff || 0) + (y.child_hospital_coeff || 0),
         }))
       )
     }
@@ -69,16 +61,8 @@ export default function MaternalDeathByYearLineGraph() {
           .sort((a, b) => a.id - b.id)
           .map((m) => ({
             label: m.id.toString().padStart(2, "0"),
-
-            // Monthly maternal coeff sum
-            maternal:
-              (m.maternal_polyclinic_coeff || 0) +
-              (m.maternal_hospital_coeff || 0),
-
-            // Monthly child coeff sum
-            child:
-              (m.child_polyclinic_coeff || 0) +
-              (m.child_hospital_coeff || 0),
+            maternal: (m.maternal_polyclinic_coeff || 0) + (m.maternal_hospital_coeff || 0),
+            child: (m.child_polyclinic_coeff || 0) + (m.child_hospital_coeff || 0),
           }))
       )
     }
@@ -86,19 +70,15 @@ export default function MaternalDeathByYearLineGraph() {
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleClick = () => {
-    setShowInfo(!showInfo);
-  }
-
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
-          Материнская и Детская смертность — Годы и Месяцы
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col relative">
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] uppercase tracking-wide truncate pr-2">
+          Материнская и Детская смертность
         </h3>
         <button 
           className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
-          onClick={()=> handleClick()}
+          onClick={()=> setShowInfo(!showInfo)}
         >
           i
         </button>
@@ -106,17 +86,16 @@ export default function MaternalDeathByYearLineGraph() {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-            График показывает динамику материнской и детской смертности на 1000 живорождений. 
-            Пик детской смертности наблюдался в 2021 году (5.1), после чего показатели стабильно снижаются. 
-            Материнская смертность остаётся на низком уровне, а небольшие колебания связаны с малым числом случаев. 
-            По классификации ВОЗ детская смертность ниже 10 на 1000 относится к низкому уровню, что соответствует мировым нормам для развитых систем здравоохранения.
+          <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
+            График показывает динамику на 1000 живорождений. 
+            Пик детской смертности был в 2021 (5.1). 
+            Материнская смертность остаётся на низком уровне.
           </div>
         }
         <div className="p-3 border-b border-gray-50">
           <div className="flex flex-wrap gap-2 mb-3">
             <button
-              className={`px-2 py-1 text-xs rounded-lg ${
+              className={`px-2 py-1 text-[10px] sm:text-xs rounded-lg transition-colors whitespace-nowrap ${
                 mode === "year"
                   ? "bg-[#3772ff] text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -127,7 +106,7 @@ export default function MaternalDeathByYearLineGraph() {
             </button>
 
             <button
-              className={`px-2 py-1 text-xs rounded-lg ${
+              className={`px-2 py-1 text-[10px] sm:text-xs rounded-lg transition-colors whitespace-nowrap ${
                 mode === "year-month"
                   ? "bg-[#3772ff] text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -142,7 +121,7 @@ export default function MaternalDeathByYearLineGraph() {
             <select
               value={selectedYear || ""}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg"
+              className="w-full text-xs border border-gray-300 px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3772ff]"
             >
               {stats.map((y) => (
                 <option key={y.year} value={y.year}>
@@ -153,23 +132,22 @@ export default function MaternalDeathByYearLineGraph() {
           )}
         </div>
 
-        {/* CHART */}
-        <div className="flex-1 p-3 min-h-0">
+        <div className="flex-1 p-2 sm:p-3 min-h-0">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <LineChart data={chartData} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid stroke="#f0f0f0" />
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
+              <XAxis dataKey="label" tick={{ fontSize: 10 }} interval="preserveStartEnd"/>
+              <YAxis tick={{ fontSize: 10 }} />
 
               <Tooltip
                 contentStyle={{
                   backgroundColor: "white",
                   border: "1px solid #c1d3ff",
                   borderRadius: "8px",
+                  fontSize: "12px",
                 }}
               />
 
-              {/* Maternal line */}
               <Line
                 type="monotone"
                 dataKey="maternal"
@@ -182,12 +160,11 @@ export default function MaternalDeathByYearLineGraph() {
                   dataKey="maternal"
                   position="top"
                   offset={6}
-                  fontSize={10}
+                  fontSize={9}
                   fontWeight={600}
                 />
               </Line>
 
-              {/* Child line */}
               <Line
                 type="monotone"
                 dataKey="child"
@@ -200,7 +177,7 @@ export default function MaternalDeathByYearLineGraph() {
                   dataKey="child"
                   position="top"
                   offset={6}
-                  fontSize={10}
+                  fontSize={9}
                   fontWeight={600}
                 />
               </Line>

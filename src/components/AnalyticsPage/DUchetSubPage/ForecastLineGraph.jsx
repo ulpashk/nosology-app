@@ -27,18 +27,14 @@ export default function ForecastLineGraph() {
         // 1. Filter data starting from year 2021
         const filteredRows = rows.filter((item) => {
           const year = parseInt(item.date.substring(0, 4));
-          return year >= 2021; // Change this to 2022 if that was intended
+          return year >= 2021; 
         });
 
         // 2. Map the filtered data
         const merged = filteredRows.map((item) => ({
           date: item.date.substring(0, 7), // YYYY-MM
-
-          // Actual values
           registry_actual: item.registry_count,
           deaths_actual: item.deaths_count,
-
-          // Forecast values
           registry_forecast: item.registry_forecast,
           deaths_forecast: item.deaths_forecast,
         }));
@@ -54,19 +50,15 @@ export default function ForecastLineGraph() {
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleClick = () => {
-    setShowInfo(!showInfo);
-  }
-
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col relative">
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] uppercase tracking-wide truncate">
           Прогноз до 2030 года
         </h3>
         <button 
           className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
-          onClick={()=> handleClick()}
+          onClick={()=> setShowInfo(!showInfo)}
         >
           i
         </button>
@@ -74,17 +66,13 @@ export default function ForecastLineGraph() {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
-            Прогноз построен с помощью модели Gradient Boosting, обученной на 47 признаках. 
-            В модели использованы данные по смертности и диспансерному учёту, что позволило 
-            учесть как динамику заболеваемости, так и сезонные колебания. 
-            Качество прогноза составляет: R² = 0.73, MAE = 30.24 и RMSE = 40.41 — показатели, 
-            характеризующие стабильную точность модели при работе с временными рядами.
+          <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
+            Прогноз (Gradient Boosting). R²=0.73, MAE=30.24. Учитывает динамику и сезонность.
           </div>
         }
-        <div className="flex-1 p-3 min-h-0">
+        <div className="flex-1 p-2 sm:p-3 min-h-0 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <LineChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <CartesianGrid stroke="#eaeaea" />
 
               <XAxis 
@@ -99,6 +87,7 @@ export default function ForecastLineGraph() {
                   backgroundColor: "white",
                   border: "1px solid #c1d3ff",
                   borderRadius: "8px",
+                  fontSize: "12px",
                 }}
               />
 

@@ -68,9 +68,9 @@ export default function CauseByYearBarChart({ year }) {
   }
 
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden">
-      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm text-left font-bold text-[#1b1b1b] uppercase tracking-wide">
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col overflow-hidden relative">
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">
           Смертность по нозологиям по годам
         </h3>
         <button 
@@ -82,7 +82,7 @@ export default function CauseByYearBarChart({ year }) {
       </div>
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-3/4">
+          <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-lg">
             График показывает распределение смертности по основным нозологиям за 2021–2025 годы. 
             <p>
               • В 2021 году наблюдаются максимальные значения, что связано с последствиями COVID-19.

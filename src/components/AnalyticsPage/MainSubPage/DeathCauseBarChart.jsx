@@ -3,7 +3,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LabelList } from "recharts"
 import { useState, useEffect } from "react"
 
-// ---- WRAP HELPER ----
 function wrapText(text, maxCharsPerLine = 25) {
   const words = text.split(" ");
   const lines = [];
@@ -20,9 +19,8 @@ function wrapText(text, maxCharsPerLine = 25) {
   return lines;
 }
 
-// ---- CUSTOM Y-AXIS TICK ----
 const CustomYAxisTick = ({ x, y, payload }) => {
-  const lines = wrapText(payload.value);
+  const lines = wrapText(payload.value, 22);
   return (
     <g transform={`translate(${x},${y})`}>
       {lines.map((line, index) => (
@@ -59,11 +57,7 @@ export default function DeathCauseBarChart({ year, month }) {
           `https://admin.smartalmaty.kz/api/v1/healthcare/death-certificates/stat_by_death_cause/${queryString}`
         )
         const json = await response.json()
-
-        const top10 = json
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 10)
-
+        const top10 = json.sort((a, b) => b.count - a.count).slice(0, 10)
         setData(top10)
       } catch (err) {
         console.error("Failed to fetch cause stats", err);
@@ -72,23 +66,18 @@ export default function DeathCauseBarChart({ year, month }) {
         setIsLoading(false);
       }
     }
-
     fetchData()
   }, [year, month])
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleClick = () => {
-    setShowInfo(!showInfo);
-  }
-
   return (
-    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 flex-shrink-0">
-        <h3 className="text-sm font-bold text-[#1b1b1b] uppercase tracking-wide">ТОП-10 Причин смерти</h3>
+    <div className="histogram-container bg-white rounded-xl shadow-md border border-gray-300 h-full flex flex-col relative">
+      <div className="p-3 sm:p-4 border-b border-gray-100 flex flex-row items-center justify-between gap-3 flex-shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold text-[#1b1b1b] uppercase tracking-wide truncate">ТОП-10 Причин смерти</h3>
         <button 
           className="px-2 text-sm text-gray-500 rounded-full border border-gray-300 hover:text-black hover:border-black hover:cursor-pointer"
-          onClick={()=> handleClick()}
+          onClick={()=> setShowInfo(!showInfo)}
         >
           i
         </button>
@@ -96,18 +85,16 @@ export default function DeathCauseBarChart({ year, month }) {
 
       <div className="flex-1 min-h-0 relative flex flex-col">
         {showInfo && 
-          <div className="absolute top-0 right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-2/3">
+          <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
             <p>
-              Большая часть смертности — около 65–70% — приходится на болезни, преимущественно хронические и длительно развивающиеся. 
-              Травмы, ДТП, а также убийства и суициды формируют значительно меньшую долю — примерно 10–15%.
+              Большая часть смертности — около 65–70% — приходится на болезни, преимущественно хронические. 
+              Травмы и ДТП формируют около 10–15%.
             </p>
           </div>
         }
-        <div className="flex-1 p-3 min-h-0 w-full">
+        <div className="flex-1 p-2 sm:p-3 min-h-0 w-full">
           {isLoading ? (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-              Загрузка...
-            </div>
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Загрузка...</div>
           ) : data.length === 0 ? (
             <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
               <svg
@@ -130,9 +117,10 @@ export default function DeathCauseBarChart({ year, month }) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} layout="vertical" margin={{ top: 5, right: 10, left: 60, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis type="number" tick={{ fontSize: 10 }} />
-                <YAxis dataKey="name" type="category" width={75} tick={<CustomYAxisTick />} />
+                <XAxis type="number" tick={{ fontSize: 9 }} />
+                <YAxis dataKey="name" type="category" width={70} tick={<CustomYAxisTick />} />
                 <Tooltip
+                  cursor={{fill: 'transparent'}}
                   contentStyle={{
                     backgroundColor: "white",
                     border: "1px solid #c1d3ff",
@@ -144,7 +132,7 @@ export default function DeathCauseBarChart({ year, month }) {
                   {data.map((entry, index) => (
                     <Cell key={index} fill="url(#deathCauseGradient)" />
                   ))}
-                  <LabelList dataKey="count" position="right" fontSize={10} fontWeight="700" />
+                  <LabelList dataKey="count" position="right" fontSize={9} fontWeight="700" />
                 </Bar>
                 <defs>
                   <linearGradient id="deathCauseGradient" x1="0" y1="0" x2="1" y2="0">

@@ -15,7 +15,7 @@ export default function AnalyticsPage() {
   const [monthDropdownOpen, setMonthDropdownOpen] = useState(false)
 
   const tabClasses = (tabId) =>
-    `rounded-md px-4 py-1.5 text-xs font-semibold transition-colors border border-gray-300
+    `rounded-md px-4 py-1.5 text-xs font-semibold transition-colors border border-gray-300 whitespace-nowrap
      ${activeTab === tabId
         ? "bg-[#236FFF] text-white"
         : "bg-transparent text-gray-700 hover:bg-gray-100"
@@ -59,162 +59,160 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-[#f5f6fa] to-[#eaebee] flex flex-col">
-      <div className="px-4 sm:px-6 pt-2 flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center relative z-20">
-        
-        <div className="flex gap-3">
-          <button className={tabClasses("main")} onClick={() => setActiveTab("main")}>
-            Главная
-          </button>
-          <button className={tabClasses("maternal")} onClick={() => setActiveTab("maternal")}>
-            Материнская смертность
-          </button>
-          <button className={tabClasses("d_uchet")} onClick={() => setActiveTab("d_uchet")}>
-            Д-учет
-          </button>
+    <div className="w-full h-screen bg-gradient-to-br from-[#f5f6fa] to-[#eaebee] flex flex-col overflow-hidden">
+      <div className="px-4 sm:px-6 pt-4 pb-2 flex flex-col xl:flex-row justify-between gap-4 items-start xl:items-center relative z-20 shrink-0">
+        <div className="w-full xl:w-auto overflow-x-auto pb-1 xl:pb-0 no-scrollbar">
+          <div className="flex gap-2 sm:gap-3">
+            <button className={tabClasses("main")} onClick={() => setActiveTab("main")}>
+              Главная
+            </button>
+            <button className={tabClasses("maternal")} onClick={() => setActiveTab("maternal")}>
+              Материнская смертность
+            </button>
+            <button className={tabClasses("d_uchet")} onClick={() => setActiveTab("d_uchet")}>
+              Д-учет
+            </button>
+          </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full xl:w-auto items-center">
           {(selectedYear !== "" || selectedMonth !== "") && (
             <button 
-              onClick={clearFilters}
-              className="text-xs text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+              onClick={clearFilters} 
+              className="text-xs text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium whitespace-nowrap"
             >
-                ✕ Сбросить фильтры
+                ✕ Сбросить
             </button>
           )}
 
-          <div className="relative w-32">
-            <div
-              onClick={() => {
-                setYearDropdownOpen(!yearDropdownOpen)
-                setMonthDropdownOpen(false)
-              }}
-              className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
-            >
-              <span className="truncate">
-                {selectedYear ? `${selectedYear} год` : "Все годы"}
-              </span>
-              <svg
-                className={`w-4 h-4 text-gray-500 transition-transform ${
-                  yearDropdownOpen ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="flex gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-32">
+              <div
+                onClick={() => {
+                  setYearDropdownOpen(!yearDropdownOpen)
+                  setMonthDropdownOpen(false)
+                }}
+                className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+                <span className="truncate">
+                  {selectedYear ? `${selectedYear} год` : "Все годы"}
+                </span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform ${
+                    yearDropdownOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
 
-            {yearDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
-                <div className="p-2 space-y-1 text-xs">
-                  <div
-                    onClick={() => handleYearChange(null)}
-                    className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
-                      !selectedYear ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
-                    }`}
-                  >
-                    <span>Все годы</span>
-                    {!selectedYear && (
-                      <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-
-                  <div className="border-b my-1"></div>
-
-                  {years.map((year) => (
+              {yearDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
+                  <div className="p-2 space-y-1 text-xs">
                     <div
-                      key={year}
-                      onClick={() => handleYearChange(year)}
+                      onClick={() => handleYearChange(null)}
                       className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
-                        parseInt(selectedYear) === year ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
+                        !selectedYear ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
                       }`}
                     >
-                      <span>{year} год</span>
-                      {parseInt(selectedYear) === year && (
+                      <span>Все годы</span>
+                      {!selectedYear && (
                         <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
                     </div>
-                  ))}
+                    <div className="border-b my-1"></div>
+                    {years.map((year) => (
+                      <div
+                        key={year}
+                        onClick={() => handleYearChange(year)}
+                        className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
+                          parseInt(selectedYear) === year ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
+                        }`}
+                      >
+                        <span>{year} год</span>
+                        {parseInt(selectedYear) === year && (
+                          <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="relative w-36">
-            <div
-              onClick={() => {
-                setMonthDropdownOpen(!monthDropdownOpen)
-                setYearDropdownOpen(false)
-              }}
-              className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
-            >
-              <span className="truncate">
-                {getMonthLabel(selectedMonth)}
-              </span>
-              <svg
-                className={`w-4 h-4 text-gray-500 transition-transform ${
-                  monthDropdownOpen ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              )}
             </div>
 
-            {monthDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
-                <div className="p-2 space-y-1 text-xs">
-                  <div
-                    onClick={() => handleMonthChange(null)}
-                    className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
-                      !selectedMonth ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
-                    }`}
-                  >
-                    <span>Все месяцы</span>
-                    {!selectedMonth && (
-                      <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
+            <div className="relative flex-1 sm:w-36">
+              <div
+                onClick={() => {
+                  setMonthDropdownOpen(!monthDropdownOpen)
+                  setYearDropdownOpen(false)
+                }}
+                className="flex items-center justify-between px-3 py-1.5 border border-gray-300 bg-white rounded-md text-xs text-gray-700 cursor-pointer hover:bg-gray-50"
+              >
+                <span className="truncate">
+                  {getMonthLabel(selectedMonth)}
+                </span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform ${
+                    monthDropdownOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
 
-                  <div className="border-b my-1"></div>
-
-                  {months.map((m) => (
+              {monthDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-md shadow-lg z-30 max-h-64 overflow-y-auto">
+                  <div className="p-2 space-y-1 text-xs">
                     <div
-                      key={m.value}
-                      onClick={() => handleMonthChange(m.value)}
+                      onClick={() => handleMonthChange(null)}
                       className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
-                        selectedMonth === m.value ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
+                        !selectedMonth ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
                       }`}
                     >
-                      <span>{m.label}</span>
-                      {selectedMonth === m.value && (
+                      <span>Все месяцы</span>
+                      {!selectedMonth && (
                         <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
                     </div>
-                  ))}
+                    <div className="border-b my-1"></div>
+                    {months.map((m) => (
+                      <div
+                        key={m.value}
+                        onClick={() => handleMonthChange(m.value)}
+                        className={`flex items-center justify-between px-2 py-2 cursor-pointer rounded hover:bg-gray-50 ${
+                          selectedMonth === m.value ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-700"
+                        }`}
+                      >
+                        <span>{m.label}</span>
+                        {selectedMonth === m.value && (
+                          <svg className="w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden p-4 sm:p-6 relative z-10">
-        <div className="mx-auto h-full">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative z-10 custom-scrollbar">
+        <div className="mx-auto h-auto lg:h-full flex flex-col">
           {activeTab === "main" && (
             <MainSubPage 
               selectedYear={selectedYear} 
