@@ -1,7 +1,7 @@
 "use client"
 
 import { Link, useLocation } from "react-router-dom"
-import { Menu, X } from "lucide-react"
+import { Menu, X, File } from "lucide-react"
 import { useState, useEffect } from "react"
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose} from "../ui/dialog"
 import NosologyMethodology from "../Methodology/NosologyMethodology"
@@ -71,6 +71,16 @@ export default function Header() {
 
           <div className="flex lg:hidden items-center gap-2">
             <button
+              onClick={() => {
+                setIsMethodologyOpen(true);
+                setMobileMenu(false);
+              }}
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#283353] hover:bg-[#ebf1ff] border border-transparent hover:border-[#c1d3ff] transition-colors w-full text-left"
+            >
+              <span>Методология</span>
+            </button>
+            
+            <button
               onClick={() => setMobileMenu(!mobileMenu)}
               className={`rounded-lg p-2 transition-all duration-200 border ${
                 mobileMenu
@@ -103,15 +113,6 @@ export default function Header() {
                 </Link>
               )
             })}
-            <button
-              onClick={() => {
-                setIsMethodologyOpen(true);
-                setMobileMenu(false);
-              }}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs font-semibold text-[#283353] hover:bg-[#ebf1ff] border border-transparent hover:border-[#c1d3ff] transition-colors w-full text-left"
-            >
-              <span>Методология</span>
-            </button>
           </div>
         </div>
       )}
