@@ -3,7 +3,6 @@ import maplibregl from 'maplibre-gl';
 export const clearFeatureStates = (map, polygonMapping) => {
   if (!map.getSource('policlinic-polygons')) return;
 
-  // Clear Polygons
   Object.values(polygonMapping).flat().forEach((polygonId) => {
     try {
       map.removeFeatureState({
@@ -13,7 +12,6 @@ export const clearFeatureStates = (map, polygonMapping) => {
     } catch (err) { /* ignore */ }
   });
 
-  // Clear Points (Iterate keys of mapping which are point IDs)
   Object.keys(polygonMapping).forEach((pointId) => {
     try {
       map.removeFeatureState({
@@ -49,8 +47,8 @@ export const setupPolygonLayers = (map, polygons) => {
         'fill-opacity': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          0.6, // Higher opacity when selected
-          0.2,
+          0.7,
+          0.5,
         ],
       },
     });
@@ -63,19 +61,16 @@ export const setupPolygonLayers = (map, polygons) => {
         'line-color': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          '#16a34a', // Darker green outline
-          ['get', 'color'],
+          '#16a34a',
+          // ['get', 'color'],
+          // 'transparent',
+          '#828893',
         ],
         'line-width': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
           3,
-          1,
-        //   1.5,
-        // ],
-        // 'line-opacity': [
-        //   'case',
-        //   ['boolean', ['feature-state', 'selected'], false],
+          1.5,
         ],
       },
     });
@@ -99,7 +94,7 @@ export const setupPointLayers = (map, points) => {
         'circle-radius': [
           'case',
           ['boolean', ['feature-state', 'selected'], false],
-          10, // Bigger when selected
+          10,
           6,
         ],
         'circle-color': ['get', 'color'],
@@ -136,9 +131,7 @@ export const updateFeatureStates = (
   newMarkerId,
   polygonMapping
 ) => {
-  // 1. Deselect Old
   if (oldMarkerId !== null && oldMarkerId !== undefined) {
-    // Deselect the point
     if (map.getSource('policlinic-points')) {
        map.setFeatureState(
          { source: 'policlinic-points', id: oldMarkerId },
@@ -146,7 +139,6 @@ export const updateFeatureStates = (
        );
     }
 
-    // Deselect associated polygons
     if (polygonMapping[oldMarkerId]) {
       polygonMapping[oldMarkerId].forEach((polyId) => {
         if (map.getSource('policlinic-polygons')) {
@@ -159,9 +151,7 @@ export const updateFeatureStates = (
     }
   }
 
-  // 2. Select New
   if (newMarkerId !== null && newMarkerId !== undefined) {
-    // Select the point
     if (map.getSource('policlinic-points')) {
       map.setFeatureState(
         { source: 'policlinic-points', id: newMarkerId },
@@ -169,7 +159,6 @@ export const updateFeatureStates = (
       );
     }
 
-    // Select associated polygons (based on MED grouping done in useHealthcareData)
     if (polygonMapping[newMarkerId]) {
       polygonMapping[newMarkerId].forEach((polyId) => {
         if (map.getSource('policlinic-polygons')) {

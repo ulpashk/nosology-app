@@ -26,7 +26,6 @@ export default function NosologyMethodology() {
 
   return (
     <div className="space-y-6 md:space-y-8 text-xs md:text-sm leading-relaxed p-4 md:p-8 pt-2 text-gray-900">
-      
       <section className="border-b pb-4">
         <h3 className="text-base md:text-lg font-semibold mb-2">
           Цель исследования

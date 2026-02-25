@@ -108,7 +108,7 @@ export default function MapFilter({
                 </span>
                 <svg
                   className={`w-4 h-4 transition-transform ${
-                    districtDropdownOpen ? "" : "rotate-180"
+                    districtDropdownOpen ? "rotate-180" : ""
                   }`}
                   fill="none"
                   stroke="currentColor"

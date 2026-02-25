@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 const API_BASE_URL =
   "https://admin.smartalmaty.kz/api/v1/healthcare/clinic-areas/";
@@ -9,29 +9,22 @@ const getDeathCountColor = (value) => {
   return "#eab308";
 };
 
-export const useHealthcareData = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+export const useHealthcareData = (selectedDistrict, selectedYear) => {
+  return useQuery({
+    queryKey: ['healthcareData', selectedDistrict, selectedYear],
+    
+    queryFn: async () => {
+      const validDistricts = Array.isArray(selectedDistrict)
+        ? selectedDistrict.filter((d) => d !== "Все районы")
+        : [];
 
-  // 1. Accept selectedYear as an argument
-  const fetchHealthcareData = useCallback(async (selectedDistrict, selectedYear) => {
-    setIsLoading(true);
-    setError(null);
+      const districtQuery =
+        validDistricts.length > 0
+          ? `district=${encodeURIComponent(validDistricts.join(","))}&`
+          : "";
 
-    const validDistricts = Array.isArray(selectedDistrict)
-      ? selectedDistrict.filter((d) => d !== "Все районы")
-      : [];
+      const yearQuery = selectedYear ? `year=${selectedYear}&` : "";
 
-    const districtQuery =
-      validDistricts.length > 0
-        ? `district=${encodeURIComponent(validDistricts.join(","))}&`
-        : "";
-
-    // 2. Build the Year Query
-    const yearQuery = selectedYear ? `year=${selectedYear}&` : "";
-
-    try {
-      // 3. Append yearQuery to URL
       const response = await fetch(
         `${API_BASE_URL}?${districtQuery}${yearQuery}limit=1000`
       );
@@ -44,38 +37,31 @@ export const useHealthcareData = () => {
         data.results
       );
 
-      const statsgeneral = { 
+      const statsgeneral = {
         totalCount: data.count,
         totalPopulation: data.total_population,
         avgVisit: data.visit_avg,
         avgPerson: data.per_1_person,
         projectedPopulation: data.population_projected,
         overallCoverage: data.overall_coverage_ratio,
-        deathCertificateCount: data.death_certificate_count, 
+        deathCertificateCount: data.death_certificate_count,
         dfRegistryCount: data.df_registry_count,
         deathCertificateAvgYear: data.death_certificate_avg_year,
       };
 
       return { polygons, points, polygonMapping, stats, statsgeneral };
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return { fetchHealthcareData, isLoading, error };
+    },
+    staleTime: 1000 * 60 * 60,
+    placeholderData: keepPreviousData,
+  });
 };
 
 const processClinicAreaData = (items) => {
   const polygonFeatures = [];
   const pointFeatures = [];
-  
   const medToIdsGroup = {};
 
   items.forEach((item) => {
-    // --- Polygon ---
     const polygonFeature = {
       type: "Feature",
       geometry: item.geom, 
@@ -89,13 +75,12 @@ const processClinicAreaData = (items) => {
         visits: item.visit_avg,
         coverage: item.overall_coverage_ratio,
         med: item.med,
-        color: ['#DCDCDC'],
-        original_color: ['#DCDCDC'] 
+        color: '#c8c8c8',
+        original_color: '#c8c8c8',
       },
     };
     polygonFeatures.push(polygonFeature);
 
-    // --- Point ---
     const pointFeature = {
       type: "Feature",
       geometry: item.facility_coordinates, 
@@ -116,7 +101,6 @@ const processClinicAreaData = (items) => {
         per_1_person: item.per_1_person,
         total_population: item.total_population,
         overall_coverage_ratio: item.overall_coverage_ratio,
-        // The color will now automatically update based on the year's data
         color: getDeathCountColor(item.death_certificate_count),
       },
     };

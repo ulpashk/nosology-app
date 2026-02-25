@@ -24,103 +24,95 @@ export default function MapView({
 }) {
   const mapContainer = useRef(null);
   const { mapRef, isLoading: mapLoading, zoomIn, zoomOut, resetView, highlightDistrict} = useMapInitialization(mapContainer);
-  const { fetchHealthcareData, isLoading: dataLoading } = useHealthcareData();
+  const { data: healthData, isFetching } = useHealthcareData(selectedDistrict, selectedYear);
 
   const selectedMarkerRef = useRef(null); 
   const polygonMappingRef = useRef({});
   const popupRef = useRef(null);
-
-  const isLoading = mapLoading || dataLoading;
+  const isLoading = mapLoading || isFetching;
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (healthData && healthData.statsgeneral) {
+      setGeneralStats(healthData.statsgeneral);
+    }
+  }, [healthData, setGeneralStats]);
 
-    const fetchAndRender = async () => {
+  useEffect(() => {
+    if (!mapRef.current || !healthData) return;
+
+    const renderLayers = () => {
       selectedMarkerRef.current = null;
       setShowDetailCard(false); 
 
-      try {
-        const data = await fetchHealthcareData(selectedDistrict, selectedYear);
+      const map = mapRef.current;
+      
+      const oldPolygonMapping = { ...polygonMappingRef.current };
+      polygonMappingRef.current = healthData.polygonMapping;
 
-        setGeneralStats(data.statsgeneral);
+      clearFeatureStates(map, oldPolygonMapping);
 
-        const addOrUpdateLayers = () => {
-          const map = mapRef.current;
+      setupPolygonLayers(map, healthData.polygons);
+      setupPointLayers(map, healthData.points);
 
-          const oldPolygonMapping = { ...polygonMappingRef.current };
-          polygonMappingRef.current = data.polygonMapping;
+      const handlePointClick = (e) => {
+        const feature = e.features?.[0];
+        if (!feature) return;
 
-          clearFeatureStates(map, oldPolygonMapping);
-
-          setupPolygonLayers(map, data.polygons);
-          setupPointLayers(map, data.points);
-
-          const handlePointClick = (e) => {
-            const feature = e.features?.[0];
-            if (!feature) return;
-
-            if (popupRef.current) {
-              popupRef.current.remove();
-            }
-
-            popupRef.current = createPopup(map, feature, e.lngLat);
-
-            popupRef.current.on("close", () => {
-              setShowDetailCard(false);
-            });
-
-            const newMarkerId = feature.properties.id;
-
-            updateFeatureStates(
-              map,
-              selectedMarkerRef.current,
-              newMarkerId,
-              polygonMappingRef.current
-            );
-
-            selectedMarkerRef.current = newMarkerId;
- 
-            setBuildingData(feature.properties);
-            setShowDetailCard(true);
-
-            map.flyTo({
-              center: feature.geometry.coordinates,
-              zoom: Math.max(map.getZoom(), 13),
-              duration: 1000,
-            });
-          };
-
-          const handleMouseEnter = () => {
-            map.getCanvas().style.cursor = 'pointer';
-          };
-
-          const handleMouseLeave = () => {
-            map.getCanvas().style.cursor = '';
-          };
-
-          map.off('click', 'policlinic-points-circle', handlePointClick);
-          map.off('mouseenter', 'policlinic-points-circle', handleMouseEnter);
-          map.off('mouseleave', 'policlinic-points-circle', handleMouseLeave);
-
-          map.on('click', 'policlinic-points-circle', handlePointClick);
-          map.on('mouseenter', 'policlinic-points-circle', handleMouseEnter);
-          map.on('mouseleave', 'policlinic-points-circle', handleMouseLeave);
-        };
-
-        if (!mapRef.current.isStyleLoaded()) {
-          mapRef.current.once('load', addOrUpdateLayers);
-        } else {
-          addOrUpdateLayers();
+        if (popupRef.current) {
+          popupRef.current.remove();
         }
-      } catch (error) {
-        console.error('Error fetching map data:', error);
-      }
+
+        popupRef.current = createPopup(map, feature, e.lngLat);
+
+        popupRef.current.on("close", () => {
+          setShowDetailCard(false);
+        });
+
+        const newMarkerId = feature.properties.id;
+
+        updateFeatureStates(
+          map,
+          selectedMarkerRef.current,
+          newMarkerId,
+          polygonMappingRef.current
+        );
+
+        selectedMarkerRef.current = newMarkerId;
+ 
+        setBuildingData(feature.properties);
+        setShowDetailCard(true);
+
+        map.flyTo({
+          center: feature.geometry.coordinates,
+          zoom: Math.max(map.getZoom(), 13),
+          duration: 1000,
+        });
+      };
+
+      const handleMouseEnter = () => {
+        map.getCanvas().style.cursor = 'pointer';
+      };
+
+      const handleMouseLeave = () => {
+        map.getCanvas().style.cursor = '';
+      };
+
+      map.off('click', 'policlinic-points-circle', handlePointClick);
+      map.off('mouseenter', 'policlinic-points-circle', handleMouseEnter);
+      map.off('mouseleave', 'policlinic-points-circle', handleMouseLeave);
+
+      map.on('click', 'policlinic-points-circle', handlePointClick);
+      map.on('mouseenter', 'policlinic-points-circle', handleMouseEnter);
+      map.on('mouseleave', 'policlinic-points-circle', handleMouseLeave);
     };
 
-    fetchAndRender();
+    if (!mapRef.current.isStyleLoaded()) {
+      mapRef.current.once('load', renderLayers);
+    } else {
+      renderLayers();
+    }
     
-  }, [selectedDistrict, selectedYear, fetchHealthcareData, setBuildingData, setShowDetailCard, setGeneralStats, mapRef]);
-
+  }, [healthData, mapRef, setBuildingData, setShowDetailCard]);
 
   useEffect(() => {
     if (!mapRef.current) return;
