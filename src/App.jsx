@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Header from './components/comps/HeaderV';
 import HomePage from './pages/HomePageV';
 import AnalyticsPage from './pages/AnalyticsPageV';
-import PersonalPage from './pages/PersonalPageV';
 
 function App() {
   return (
@@ -14,7 +13,6 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage/>}/>
             <Route path="/analytics" element={<AnalyticsPage/>}/>
-            <Route path="/personal" element={<PersonalPage/>}/>
           </Routes>
         </main>
       </div>
