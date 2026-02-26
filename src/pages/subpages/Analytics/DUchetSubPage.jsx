@@ -8,11 +8,10 @@ import YearDynamicsBarChart from "../../../components/AnalyticsPage/DUchetSubPag
 export default function DUchetSubPage({ selectedYear, selectedMonth }){ 
     return (
         <div className="flex flex-col gap-4 pb-4 lg:pb-0 h-auto lg:h-full">
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0 h-auto lg:h-[45%]">
                 <div className="h-80 md:h-[400px] lg:h-auto lg:min-h-0 w-full">
-                    <ForecastLineGraph 
-                        year={selectedYear} 
+                    <ForecastLineGraph
+                        year={selectedYear}
                         month={selectedMonth}
                     />
                 </div>

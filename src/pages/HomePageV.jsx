@@ -4,11 +4,14 @@ import { useState } from "react"
 import Map from "../components/HomePage/MapV"
 import MapFilter from "../components/HomePage/MapFilter"
 
-export default function HomePage() {
+export default function HomePage({
+  selectedDistrict, 
+  setSelectedDistrict, 
+  selectedYear, 
+  setSelectedYear
+}) {
   const [buildingData, setBuildingData] = useState([])
   const [showDetailCard, setShowDetailCard] = useState(true)
-  const [selectedDistrict, setSelectedDistrict] = useState(["Все районы"])
-  const [selectedYear, setSelectedYear] = useState(null)
   const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false)
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false)
   const [generalStats, setGeneralStats] = useState({})
