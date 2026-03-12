@@ -39,7 +39,7 @@ export default function Header() {
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="min-w-0 text-left">
             <h1 className="text-sm sm:text-base font-bold text-[#1b1b1b] truncate">
-              Карта нозологий и смертности
+              Карта нозологий и смертности 2025
             </h1>
           </div>
         </div>
