@@ -57,7 +57,7 @@ export default function DeathMoTable({ year, month }){
             <div className="flex-1 min-h-0 relative w-full group">
                 {showInfo && 
                     <div className="absolute top-0 right-2 sm:right-3 text-xs text-left p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 z-50 w-[90%] sm:w-2/3 shadow-xl">
-                        Таблица показывает количество смертей по МО на основе МКБ-кодов.
+                        Таблица показывает количество материнских и детских смертей, распределенных по медицинским организациям на основе МКБ-кодов.
                     </div>
                 }
                 
