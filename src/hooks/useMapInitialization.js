@@ -27,20 +27,11 @@ export const useMapInitialization = (containerRef) => {
     mapRef.current.on('load', () => {
       setIsLoading(false);
 
-      mapRef.current.addSource("almaty-districtss", {
-        type: "geojson",
-        data: "/data/almaty_districts.json",
-      });
+      const geojsonData = `${process.env.PUBLIC_URL}/data/almaty_districts.json`;
 
-      mapRef.current.addLayer({
-        id: "district-fill",
-        type: "fill",
-        source: "almaty-districts",
-        paint: {
-          // "fill-color": "#4ade80",
-          "fill-color": "#7bcbdbff",
-          "fill-opacity": 0.25
-        }
+      mapRef.current.addSource("almaty-districts", {
+        type: "geojson",
+        data: geojsonData,
       });
 
       mapRef.current.addLayer({
@@ -49,8 +40,8 @@ export const useMapInitialization = (containerRef) => {
         source: "almaty-districts",
         paint: {
           // "line-color": "#166534",
-          "line-color": "#3a659cff",
-          "line-width": 2
+          "line-color": "rgb(67, 119, 188)",
+          "line-width": 0.5
         }
       });
 
@@ -81,7 +72,6 @@ export const useMapInitialization = (containerRef) => {
 
     // If input is empty → show everything
     if (!districtNames || districtNames.length === 0) {
-      map.setFilter("district-fill", null);
       map.setFilter("district-outline", null);
       return;
     }
@@ -99,8 +89,6 @@ export const useMapInitialization = (containerRef) => {
       filters.push(["==", ["get", "nameRu"], d]);
     });
 
-    // Apply filters
-    map.setFilter("district-fill", filters);
     map.setFilter("district-outline", filters);
   };
 
