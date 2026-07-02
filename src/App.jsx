@@ -9,7 +9,7 @@ function App() {
   const [selectedDistrict, setSelectedDistrict] = useState(["Все районы"]);
   const [selectedYear, setSelectedYear] = useState(null);
   return (
-    <Router>
+    <Router basename="/healthcare-nosology">
       <div className="App h-full w-full flex flex-col overflow-hidden">
         <Header/>
         <main className="flex-1 overflow-hidden">
