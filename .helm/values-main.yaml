@@ -39,7 +39,7 @@ ingress:
   hosts:
     - host: opendata.smartalmaty.kz
       paths:
-        - path: /healthcare-nosology(|$)(.*)
+        - path: /nosology(|$)(.*)
           pathType: ImplementationSpecific
   tls:
     - secretName: smartalmaty-wildcard-0
