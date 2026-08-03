@@ -2,7 +2,7 @@
   "name": "nosology-mortality-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/healthcare-nosology/",
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
     "@testing-library/dom": "^10.4.1",
