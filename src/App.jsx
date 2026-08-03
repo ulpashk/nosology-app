@@ -6,8 +6,8 @@ import HomePage from './pages/HomePageV';
 import AnalyticsPage from './pages/AnalyticsPageV';
 
 const getBasename = () => {
-  return window.location.pathname.startsWith('/nosology')
-    ? '/nosology'
+  return window.location.pathname.startsWith('/healthcare-nosology')
+    ? '/healthcare-nosology'
     : '';
 };
 
